@@ -15,7 +15,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12 text-center">
-                    <img src="{% static 'images/TBC 2' %}" class="img-fluid" alt="The Baker's Cottage Logo">
+                    <img src="{% static 'images/TBC 2.png' %}" class="img-fluid" alt="The Baker's Cottage Logo">
                 </div>
             </div>
         </div>
@@ -24,6 +24,9 @@
     <nav class="navbar navbar-expand-sm">
         <ul class="navbar-nav w-100 d-flex justify-content-center">
             <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'shop' %}">Shop</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'bookings' %}">Afternoon Tea</a></li>
+            <li class="nav-item"><a class="nav-link" href="{% url 'contact' %}">Contact</a></li>
 
             <li class="nav-item">
                 <a class="nav-link cart-icon" href="#" data-bs-toggle="modal" data-bs-target="#cartModal">
