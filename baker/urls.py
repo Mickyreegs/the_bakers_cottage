@@ -18,9 +18,13 @@ from django.contrib import admin
 from django.urls import path
 from bookings.views import my_bookings
 from shop.views import my_shop
+from contact.views import contact
+from home.views import home
 
 urlpatterns = [
+    path('home/', home, name='home'),
     path('bookings/', my_bookings, name='bookings'),
     path('shop/', my_shop, name='shop'),
+    path('contact/', contact, name='contact'),
     path('admin/', admin.site.urls),
 ]
