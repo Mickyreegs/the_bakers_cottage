@@ -4,4 +4,4 @@ from django.http import HttpResponse
 # Create your views here.
 
 def contact(request):
-    return HttpResponse("This is the contact section")
+    return render(request, "contact/contact.html")

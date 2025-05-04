@@ -3,5 +3,5 @@ from django.http import HttpResponse
 
 # Create your views here.
 
-def my_shop(request):
-    return HttpResponse("This is the shop section")
+def shop(request):
+    return render(request, "shop/shop.html")
