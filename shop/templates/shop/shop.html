@@ -1,9 +1,48 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 
-<!-- index.html content starts here -->
+<main class="container my-4 shared">
 
+    <!-- Selection Box Section -->
+    <section>
+        <h2 class="text-center mb-4">Selection Boxes to Order</h2>
+        <div class="row">
+            {% for box in selection_boxes %}
+            <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+                <div class="card">
+                    <img src="{% static 'images/Shop/' %}{{ box.box_type|slugify }}.jpg" class="card-img-top" alt="{{ box.box_type }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ box.box_type }}</h5>
+                        <p class="card-text">€ {{ box.price }}</p>
+                        <button class="btn btn-primary add-to-cart" data-name="{{ box.box_type }}" data-price="{{ box.price }}">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>            
+    </section>
 
-<!-- index.html content ends here -->
+    <!-- Individual Cakes Section -->
+    <section>
+        <h2 class="text-center mb-4">Cakes to Order</h2>        
+        <div class="row cake-page active" id="page-1">
+            {% for cake in cakes %}
+            <div class="col-sm-6 col-md-4 mb-4">
+                <div class="card">
+                    <img src="{% static 'images/Shop/' %}{{ cake.cake_type|slugify }}.jpg" class="card-img-top" alt="{{ cake.cake_type }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ cake.cake_type }}</h5>
+                        <p class="card-text">€ {{ cake.price }}</p>
+                        <button class="btn btn-primary add-to-cart" data-name="{{ cake.cake_type }}" data-price="{{ cake.price }}">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+</main>
+
 {% endblock %}
