@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
+from django.core.validators import MinValueValidator
+from django.core.exceptions import ValidationError
+
+
 
 # Create your models here.
 class TeaPackage(models.Model):
@@ -16,11 +20,14 @@ class TeaPackage(models.Model):
     
 
 class Booking(models.Model):
-    customer = models.ForeignKey(User, on_delete=models.CASCADE)
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='bookings')
+    guest_name = models.CharField(max_length=100, blank=False, null=False, default="default@example.com")
+    guest_email = models.EmailField(blank=False, null=False)
     package = models.ForeignKey(TeaPackage, on_delete=models.CASCADE, default=1)
-    date = models.DateField()
+    date = models.DateField(db_index=True)
     time = models.TimeField()
-    number_of_guests = models.IntegerField()
+    number_of_guests = models.PositiveIntegerField(validators=[MinValueValidator(1)])
+    guests_with_special_requests = models.PositiveIntegerField(blank=True, null=True, validators=[MinValueValidator(0)])
     special_requests = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(default=now)
     updated_at = models.DateTimeField(auto_now=True)
@@ -29,7 +36,17 @@ class Booking(models.Model):
         ('confirmed', 'Confirmed'),
         ('cancelled', 'Cancelled'),
     ]
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending', db_index=True)
+
+    def clean(self):
+        if (self.guests_with_special_requests or 0) > self.number_of_guests:
+            raise ValidationError("The number of guests with special requests cannot exceed the total number of guests.")
+        
+        if not self.customer and (not self.guest_name or not self.guest_email):
+            raise ValidationError("Guest bookings require both a name and an email for confirmation.")
+
 
     def __str__(self):
-        return f"Booking for {self.customer.username} - {self.package.name} on {self.date} at {self.time}"
+        customer_name = self.customer.username if self.customer else self.guest_name
+        return f"Booking for {customer_name} - {self.package.name} on {self.date} at {self.time}"
+
