@@ -21,8 +21,8 @@ class TeaPackage(models.Model):
 
 class Booking(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='bookings')
-    guest_name = models.CharField(max_length=100, blank=False, null=False, default="default@example.com")
-    guest_email = models.EmailField(blank=False, null=False)
+    guest_name = models.CharField(max_length=100, blank=False, null=False, default="Unregistered Guest")
+    guest_email = models.EmailField(blank=False, null=False, default="user@email.com")
     package = models.ForeignKey(TeaPackage, on_delete=models.CASCADE, default=1)
     date = models.DateField(db_index=True)
     time = models.TimeField()
