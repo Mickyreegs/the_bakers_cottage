@@ -5,44 +5,95 @@ document.addEventListener("DOMContentLoaded", function() {
     const userAuthStatus = document.querySelector("#user-authenticated");
     const specialGuestsInput = document.querySelector("#id_guests_with_special_requests");
     const totalGuestsInput = document.querySelector("#id_number_of_guests");
+    const dateInput = document.querySelector("#id_date");
+    const timeInput = document.querySelector("#id_time");
+    const confirmationModalElement = document.getElementById("confirmationModal");
+    const successAlert = document.querySelector(".alert-success");
 
-    // Booking form validation
-    form.addEventListener("submit", function(event) {
-        const guestName = guestNameInput.value.trim();
-        const guestEmail = guestEmailInput.value.trim();
-        const userAuthenticated = userAuthStatus.dataset.authenticated === "true";
+    // Ensure only future dates can be selected
+    const today = new Date().toISOString().split("T")[0];
+    if (dateInput) {
+        dateInput.setAttribute("min", today);
+    }
 
-        if (!userAuthenticated && (!guestName || !guestEmail)) {
-            event.preventDefault();
-            showErrorMessage("Guest bookings require both a name and an email.");
-        }
-    });
-
-    // Validate number of special request guests
-    specialGuestsInput.addEventListener("input", function() {
-        let totalGuests = parseInt(totalGuestsInput.value) || 1;
-        let specialGuests = parseInt(this.value) || 0;
-
-        if (specialGuests > totalGuests) {
-            showErrorMessage("The number of guests with special requests cannot exceed the total number of guests.");
-            this.value = totalGuests;
-        }
-    });
+    // Prevent selecting a past time when booking for today
+    if (timeInput && dateInput) {
+        dateInput.addEventListener("change", function () {
+            if (dateInput.value === today) {
+                const now = new Date();
+                const currentTime = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+                timeInput.setAttribute("min", currentTime);
+            } else {
+                timeInput.removeAttribute("min");
+            }
+        });
+    }
 
     // Function to display error messages
-    function showErrorMessage(message) {
+    function showErrorMessage(messages) {
         const errorContainer = document.querySelector("#form-errors");
         if (errorContainer) {
-            errorContainer.innerHTML = ""; // Clears previous errors
+            errorContainer.innerHTML = ""; 
+
             const errorAlert = document.createElement("div");
             errorAlert.className = "alert alert-danger alert-dismissible fade show";
             errorAlert.setAttribute("role", "alert");
+
             errorAlert.innerHTML = `
-                ${message}
+                ${messages.join("<br>")}  
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             `;
+
             errorContainer.appendChild(errorAlert);
         }
+    }
+
+    // Prevent empty form submissions
+    function toggleSubmitButton() {
+        const submitButton = document.querySelector("button[type='submit']");
+        if (submitButton) {
+            submitButton.disabled = !form.checkValidity();
+        }
+    }
+
+    form.addEventListener("input", toggleSubmitButton);
+
+    // Booking form validation
+    if (form) {
+        form.addEventListener("input", toggleSubmitButton);
+        form.addEventListener("submit", function(event) {
+            console.log("Submit event triggered!");
+            event.preventDefault();
+
+            let errorMessages = [];
+            const guestName = guestNameInput ? guestNameInput.value.trim() : "";
+            const guestEmail = guestEmailInput ? guestEmailInput.value.trim() : "";
+            const userAuthenticated = userAuthStatus ? userAuthStatus.dataset.authenticated === "true" : false;
+
+            if (!userAuthenticated && (!guestName || !guestEmail)) {
+                errorMessages.push("Guest bookings require both a name and an email.");
+            }
+
+            if (errorMessages.length > 0) {
+                showErrorMessage(errorMessages);
+            } else {
+                console.log("Validation passed. Submitting form...");
+                form.submit();
+            }
+        });
+    }
+
+    // Validate number of special request guests
+    if (specialGuestsInput && totalGuestsInput) {
+        specialGuestsInput.addEventListener("input", function() {
+            let totalGuests = parseInt(totalGuestsInput.value) || 1;
+            let specialGuests = parseInt(this.value) || 0;
+
+            if (specialGuests > totalGuests) {
+                showErrorMessage(["The number of guests with special requests cannot exceed the total number of guests."]);
+                this.value = totalGuests;
+            }
+        });
     }
 
 });

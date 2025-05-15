@@ -20,7 +20,7 @@ class TeaPackage(models.Model):
     
 
 class Booking(models.Model):
-    customer = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='bookings')
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='bookings', db_index=True)
     guest_name = models.CharField(max_length=100, blank=False, null=False, default="Unregistered Guest")
     guest_email = models.EmailField(blank=False, null=False, default="user@email.com")
     package = models.ForeignKey(TeaPackage, on_delete=models.CASCADE, default=1)
@@ -39,6 +39,14 @@ class Booking(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending', db_index=True)
 
     def clean(self):
+        super().clean()
+
+        if self.date < now().date():
+            raise ValidationError("Booking date cannot be in the past.")
+
+        if self.date == now().date() and self.time < now().time():
+            raise ValidationError("Booking time cannot be in the past.")
+
         if (self.guests_with_special_requests or 0) > self.number_of_guests:
             raise ValidationError("The number of guests with special requests cannot exceed the total number of guests.")
         
