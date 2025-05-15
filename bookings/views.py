@@ -1,12 +1,15 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
+from django.urls import reverse
+from django.contrib import messages
+from django.core.exceptions import ValidationError
+from django.utils.timezone import now
 from .models import TeaPackage, Booking
 from .forms import BookingForm
-from django.contrib import messages
 
 # Create your views here.
 def bookings(request):
     packages = TeaPackage.objects.all()
-    bookings = Booking.objects.filter(customer=request.user) if request.user.is_authenticated else Booking.objects.none()
+    bookings = Booking.objects.select_related("package").filter(customer=request.user) if request.user.is_authenticated else Booking.objects.none()
 
     if request.method == "POST":
         form = BookingForm(request.POST)
@@ -20,12 +23,16 @@ def bookings(request):
                     messages.error(request, "Guest bookings require both a name and an email.")
                     return render(request, "bookings/bookings.html", {"packages": packages, "bookings": bookings, "form": form})
                 
-            booking.save()
+            try:
+                booking.full_clean() 
+                booking.save()
+                messages.success(request, "Your booking was successful! See you soon!")
+                return redirect(reverse("bookings"))
+            except ValidationError as e:
+                messages.error(request, "; ".join(e.messages))
+                return render(request, "bookings/bookings.html", {"packages": packages, "bookings": bookings, "form": form})
 
-            messages.success(request, "Your booking was successful!  See you soon!")
-            return redirect("bookings")
     else:
         form = BookingForm()
     
     return render(request, "bookings/bookings.html", {"packages": packages, "bookings": bookings, "form": form})
-
