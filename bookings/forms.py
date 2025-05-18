@@ -6,6 +6,14 @@ class BookingForm(forms.ModelForm):
     guest_name = forms.CharField(required=False, label="Guest Name (if not logged in)")
     guest_email = forms.EmailField(required=False, label="Guest Email (if not logged in)")
 
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        if user and user.is_authenticated:
+            self.fields['guest_name'].initial = user.get_full_name() or user.username
+            self.fields['guest_email'].initial = user.email
+
 
     class Meta:
         model = Booking
@@ -23,6 +31,7 @@ class BookingForm(forms.ModelForm):
             'date': forms.DateInput(attrs={'type': 'date'}),
             'time': forms.TimeInput(attrs={'type': 'time'}),
         }
+
 
     def clean_date(self):
         date = self.cleaned_data.get("date")

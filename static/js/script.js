@@ -1,5 +1,6 @@
-document.addEventListener("DOMContentLoaded", function() {
-    const form = document.querySelector("form");
+document.addEventListener("DOMContentLoaded", function () {
+    const bookingForm = document.querySelector("#booking-form");
+    const logoutForm = document.querySelector("#logout-form");
     const guestNameInput = document.querySelector("#id_guest_name");
     const guestEmailInput = document.querySelector("#id_guest_email");
     const userAuthStatus = document.querySelector("#user-authenticated");
@@ -7,8 +8,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const totalGuestsInput = document.querySelector("#id_number_of_guests");
     const dateInput = document.querySelector("#id_date");
     const timeInput = document.querySelector("#id_time");
-    const confirmationModalElement = document.getElementById("confirmationModal");
-    const successAlert = document.querySelector(".alert-success");
 
     // Ensure only future dates can be selected
     const today = new Date().toISOString().split("T")[0];
@@ -21,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
         dateInput.addEventListener("change", function () {
             if (dateInput.value === today) {
                 const now = new Date();
-                const currentTime = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+                const currentTime = now.getHours().toString().padStart(2, "0") + ":" + now.getMinutes().toString().padStart(2, "0");
                 timeInput.setAttribute("min", currentTime);
             } else {
                 timeInput.removeAttribute("min");
@@ -33,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function showErrorMessage(messages) {
         const errorContainer = document.querySelector("#form-errors");
         if (errorContainer) {
-            errorContainer.innerHTML = ""; 
+            errorContainer.innerHTML = "";
 
             const errorAlert = document.createElement("div");
             errorAlert.className = "alert alert-danger alert-dismissible fade show";
@@ -48,21 +47,19 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // Prevent empty form submissions
+    // Prevent empty booking form submissions
     function toggleSubmitButton() {
-        const submitButton = document.querySelector("button[type='submit']");
-        if (submitButton) {
-            submitButton.disabled = !form.checkValidity();
+        const submitButton = document.querySelector("#booking-form button[type='submit']");
+        if (submitButton && bookingForm) {
+            submitButton.disabled = !bookingForm.checkValidity();
         }
     }
 
-    form.addEventListener("input", toggleSubmitButton);
+    if (bookingForm) {
+        bookingForm.addEventListener("input", toggleSubmitButton);
 
-    // Booking form validation
-    if (form) {
-        form.addEventListener("input", toggleSubmitButton);
-        form.addEventListener("submit", function(event) {
-            console.log("Submit event triggered!");
+        bookingForm.addEventListener("submit", function (event) {
+            console.log("Booking Submit event triggered!");
             event.preventDefault();
 
             let errorMessages = [];
@@ -77,15 +74,22 @@ document.addEventListener("DOMContentLoaded", function() {
             if (errorMessages.length > 0) {
                 showErrorMessage(errorMessages);
             } else {
-                console.log("Validation passed. Submitting form...");
-                form.submit();
+                console.log("Validation passed. Submitting booking form...");
+                bookingForm.submit();
             }
+        });
+    }
+
+    // Allow logout form to submit properly
+    if (logoutForm) {
+        logoutForm.addEventListener("submit", function (event) {
+            console.log("Logout form submitted!");
         });
     }
 
     // Validate number of special request guests
     if (specialGuestsInput && totalGuestsInput) {
-        specialGuestsInput.addEventListener("input", function() {
+        specialGuestsInput.addEventListener("input", function () {
             let totalGuests = parseInt(totalGuestsInput.value) || 1;
             let specialGuests = parseInt(this.value) || 0;
 
@@ -95,5 +99,4 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
-
 });
