@@ -28,6 +28,53 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // Function to display messages dynamically
+    function showMessage(id) {
+        const message = document.getElementById(id);
+        if (message) {
+            message.style.display = "block";
+            setTimeout(() => message.style.display = "none", 3000);
+        }
+    }
+
+    // Handle adding items to cart dynamically
+    const cartForms = document.querySelectorAll(".add-to-cart-form");
+    cartForms.forEach(form => {
+        form.addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent full page reload
+
+            fetch(form.action, {
+                method: "POST",
+                body: new FormData(form),
+            })
+            .then(response => response.json())
+            .then(data => {
+                showMessage("cartMessage"); // Show add-to-cart success message
+                document.getElementById("cartTotal").textContent = `Total: €${data.cart_total}`;
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    });
+
+    // Handle removing items from cart in modal dynamically
+    const removeButtons = document.querySelectorAll(".remove-from-cart");
+    removeButtons.forEach(button => {
+        button.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent page reload
+
+            fetch(button.href, {
+                method: "GET",
+            })
+            .then(response => response.json())
+            .then(data => {
+                showMessage("removeMessage"); // Show removal success message
+                document.getElementById("cartTotal").textContent = `Total: €${data.cart_total}`;
+                button.closest(".list-group-item").remove(); // Remove item visually from modal
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    });
+
     // Function to display error messages
     function showErrorMessage(messages) {
         const errorContainer = document.querySelector("#form-errors");

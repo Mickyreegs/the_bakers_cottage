@@ -5,7 +5,12 @@
 
 <main class="container my-4 shared">
 
-    <!-- Selection Box Section -->
+    <!-- Success Message for Adding Items -->
+    <div id="cartMessage" class="alert alert-success text-center" style="display: none;">
+        Item added to cart!
+    </div>
+
+     <!-- Selection Box Section -->
     <section>
         <h2 class="text-center mb-4">Selection Boxes to Order</h2>
         <div class="row">
@@ -16,7 +21,15 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ box.box_type }}</h5>
                         <p class="card-text">€ {{ box.price }}</p>
-                        <button class="btn btn-primary add-to-cart" data-name="{{ box.box_type }}" data-price="{{ box.price }}">Add to Cart</button>
+
+                        <form method="post" action="{% url 'add_to_cart' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="item_type" value="box">
+                            <input type="hidden" name="item_id" value="{{ box.id }}">
+                            <input type="number" name="quantity" min="1" max="10" value="1">
+                            <button type="submit" class="btn btn-primary">Add to Cart</button>
+                        </form>
+
                     </div>
                 </div>
             </div>
@@ -35,7 +48,15 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ cake.cake_type }}</h5>
                         <p class="card-text">€ {{ cake.price }}</p>
-                        <button class="btn btn-primary add-to-cart" data-name="{{ cake.cake_type }}" data-price="{{ cake.price }}">Add to Cart</button>
+
+                        <form method="post" action="{% url 'add_to_cart' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="item_type" value="cake">
+                            <input type="hidden" name="item_id" value="{{ cake.id }}">
+                            <input type="number" name="quantity" min="1" max="10" value="1">
+                            <button type="submit" class="btn btn-primary">Add to Cart</button>
+                        </form>
+
                     </div>
                 </div>
             </div>

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+{% if orders %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Pickup Time</th>
+                <th>Items</th>
+                <th>Total (€)</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.pickup_time }}</td>
+                    <td>
+                        <ul class="list-unstyled">
+                            {% for item in order.orderitem_set.all %}
+                                <li>
+                                    {{ item.quantity }}x 
+                                    {% if item.cake %}
+                                        {{ item.cake.cake_type }}
+                                    {% else %}
+                                        {{ item.box.box_type }}
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+                    <td>{{ order.total_price }}</td>
+                    <td>
+                        {% if order.pickup_time > now %}
+                            <a href="{% url 'modify_order' order.id %}" class="btn btn-warning btn-sm">Modify</a>
+                            <a href="{% url 'delete_order' order.id %}" onclick="return confirm('Are you sure?');" class="btn btn-danger btn-sm">Cancel</a>
+                        {% else %}
+                            <span class="text-muted">Order locked for pickup.</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p class="text-center text-muted">You have no orders yet.</p>
+{% endif %}
+
+{% endblock %}
