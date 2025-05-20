@@ -3,6 +3,7 @@ from .models import SelectionBox, Cake, Order, OrderItem
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from decimal import Decimal
+from django.utils.timezone import now, localtime
 
 # SHOP VIEW – Displays available cakes and selection boxes.
 def shop(request):
@@ -35,12 +36,31 @@ def add_to_cart(request):
 
         if item_type == "box" and SelectionBox.objects.filter(id=item_id).exists():
             item = SelectionBox.objects.get(id=item_id)
-            cart.append({"box_id": item.id, "box_type": item.box_type, "quantity": quantity})
+            cart.append({
+                "box_id": item.id,
+                "box_type": item.box_type,
+                "box_price": float(item.price),
+                "quantity": quantity
+            })
         elif item_type == "cake" and Cake.objects.filter(id=item_id).exists():
             item = Cake.objects.get(id=item_id)
-            cart.append({"cake_id": item.id, "cake_type": item.cake_type, "quantity": quantity})
+            cart.append({
+                "cake_id": item.id,
+                "cake_type": item.cake_type,
+                "cake_price": float(item.price),
+                "quantity": quantity
+            })
 
         request.session["cart"] = cart
+
+        request.session["cart_total"] = float(sum(
+            item.get("box_price", 0) * item["quantity"] if "box_price" in item else
+            item.get("cake_price", 0) * item["quantity"] if "cake_price" in item else 0
+            for item in cart
+        ))
+
+        request.session.modified = True
+        request.session.save()
 
     return redirect("shop")
 
@@ -68,11 +88,14 @@ def submit_order(request):
         order = Order.objects.create(
             user=user,
             email=user.email,
-            pickup_time=datetime.now() + timedelta(hours=1)
+            pickup_time=now() + timedelta(hours=1)
         )
 
         total_price = Decimal(0)
         cart_items = request.session.get("cart", [])
+
+        if not cart_items:
+            return redirect("shop")
 
         for item in cart_items:
             cake = Cake.objects.get(id=item["cake_id"]) if item.get("cake_id") else None
@@ -85,17 +108,20 @@ def submit_order(request):
         order.total_price = total_price
         order.save()
 
-        # Clear session cart after order submission
         request.session["cart"] = []
+        request.session["cart_total"] = 0
+        request.session.modified = True
 
         return redirect("order_history")
+
+    return redirect("shop")
 
     
 # ORDER HISTORY – Displays user orders with modification and deletion options.
 @login_required
 def order_history(request):
     orders = Order.objects.filter(user=request.user).select_related("user").order_by("-created_at")
-    return render(request, "shop/order_history.html", {"orders": orders, "now": datetime.now()})
+    return render(request, "shop/order_history.html", {"orders": orders, "now": now()})
 
 
 # MODIFY ORDER – Allows users to update item quantities or remove items.
@@ -104,7 +130,7 @@ def modify_order(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
 
     # Prevent modification after pickup time
-    if datetime.now() >= order.pickup_time:
+    if now() >= order.pickup_time:
         return redirect("order_history")
 
     if request.method == "POST":
@@ -120,7 +146,10 @@ def modify_order(request, order_id):
         if order.orderitem_set.count() == 0:
             order.delete()
         else:
-            order.total_price = sum(item.quantity * (item.cake.price if item.cake else item.box.price) for item in order.orderitem_set.all())
+            order.total_price = sum(
+                item.quantity * (item.cake.price if item.cake else item.box.price)
+                for item in order.orderitem_set.all()
+            )
             order.save()
 
         return redirect("order_history")
@@ -133,7 +162,7 @@ def modify_order(request, order_id):
 def delete_order(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
 
-    if datetime.now() < order.pickup_time:
+    if now() < order.pickup_time:
         order.delete()
     
     return redirect("order_history")

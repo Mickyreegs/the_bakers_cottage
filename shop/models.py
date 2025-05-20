@@ -33,11 +33,11 @@ class Order(models.Model):
     email = models.EmailField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal(0))
     created_at = models.DateTimeField(auto_now_add=True)
-    pickup_time = models.DateTimeField(default=now)  # Fixes serialization issue
+    pickup_time = models.DateTimeField(default=now)
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default="Pending")
 
     def save(self, *args, **kwargs):
-        if not self.pickup_time:
+        if not self.pickup_time or self.pickup_time.tzinfo is None:
             self.pickup_time = now() + timedelta(hours=1)
         super().save(*args, **kwargs)
 
