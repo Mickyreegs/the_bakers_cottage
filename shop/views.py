@@ -177,11 +177,15 @@ def modify_order(request, order_id):
 
             messages.success(request, "Order updated successfully!")
 
-        # ✅ If all items are removed, delete the order and redirect
         if not order.order_items.exists():
             order.delete()
             messages.success(request, "Order deleted successfully!")
             return redirect("order_history")
+        
+        order.total_price = sum(item.quantity * item.price for item in order.order_items.all())
+        order.save()
+
+        return redirect("order_history")
 
     return render(request, "shop/modify_order.html", {"order": order})
 
