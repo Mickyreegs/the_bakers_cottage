@@ -1,3 +1,21 @@
+function removeItem(itemId, orderId) {
+    fetch(`/shop/modify_order/${orderId}/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": document.querySelector("input[name=csrfmiddlewaretoken]").value,
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "remove_item=" + itemId
+    })
+    .then(response => {
+        if (response.ok) {
+            location.reload();
+        } else {
+            alert("Failed to remove item.");
+        }
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     const bookingForm = document.querySelector("#booking-form");
     const logoutForm = document.querySelector("#logout-form");

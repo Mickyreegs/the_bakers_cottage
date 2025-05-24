@@ -41,23 +41,33 @@ class Order(models.Model):
             self.pickup_time = now() + timedelta(hours=1)
         super().save(*args, **kwargs)
 
+    def update_total_price(self):
+        self.total_price = sum(item.quantity * item.price for item in self.order_items.all())
+        self.save()
+
     def __str__(self):
         return f"Order {self.id} by {self.user.first_name} {self.user.last_name} - Total: €{self.total_price}"
 
+
 # Order Items Model
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    cake = models.ForeignKey(Cake, on_delete=models.CASCADE, null=True, blank=True)
-    box = models.ForeignKey(SelectionBox, on_delete=models.CASCADE, null=True, blank=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="order_items", null=True, blank=True)
+    item_type = models.CharField(max_length=10, choices=[("cake", "Cake"), ("box", "Box")])
+    item_id = models.PositiveIntegerField()
+
+    name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField(default=1)
 
     def __str__(self):
-        return f"{self.quantity}x {self.cake or self.box}"
+        return f"{self.quantity}x {self.name} ({self.item_type})"
 
     def clean(self):
-        if not self.cake and not self.box:
-            raise ValidationError("Order item must contain a cake or a selection box.")
+        if not self.item_type or not self.name:
+            raise ValidationError("Order item must have a valid type and name.")
 
     def save(self, *args, **kwargs):
         self.clean()
         super().save(*args, **kwargs)
+
+

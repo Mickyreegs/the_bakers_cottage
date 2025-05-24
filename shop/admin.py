@@ -17,12 +17,14 @@ class SelectionBoxAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ("user", "email", "total_price", "pickup_time", "created_at")
+    list_display = ("user", "email", "total_price", "created_at", "pickup_time", "order_items_summary")
     search_fields = ["email", "user__username"]
 
-@admin.register(OrderItem)
-class OrderItemAdmin(admin.ModelAdmin):
-    list_display = ("order", "cake", "box", "quantity")
-    search_fields = ["order__user__username"]
+    def order_items_summary(self, obj):
+        return ", ".join(f"{item.quantity}x {item.name}" for item in obj.order_items.all())
+
+    order_items_summary.short_description = "Items Ordered"
+
+
 
 

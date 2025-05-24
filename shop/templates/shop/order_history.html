@@ -21,15 +21,12 @@
                     <td>{{ order.pickup_time }}</td>
                     <td>
                         <ul class="list-unstyled">
-                            {% for item in order.orderitem_set.all %}
+                            {% for item in order.order_items.all %}
                                 <li>
-                                    {{ item.quantity }}x 
-                                    {% if item.cake %}
-                                        {{ item.cake.cake_type }}
-                                    {% else %}
-                                        {{ item.box.box_type }}
-                                    {% endif %}
+                                    {{ item.quantity }}x {{ item.name }} (€{{ item.price }})
                                 </li>
+                            {% empty %}
+                                <li>No items in this order</li>
                             {% endfor %}
                         </ul>
                     </td>

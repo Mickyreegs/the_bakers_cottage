@@ -3,7 +3,10 @@ from .models import SelectionBox, Cake, Order, OrderItem
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from decimal import Decimal
-from django.utils.timezone import now, localtime
+from django.utils.timezone import now
+from django.contrib import messages
+from django.db.models import Count
+
 
 # SHOP VIEW – Displays available cakes and selection boxes.
 def shop(request):
@@ -88,22 +91,31 @@ def submit_order(request):
         order = Order.objects.create(
             user=user,
             email=user.email,
-            pickup_time=now() + timedelta(hours=1)
+            pickup_time=now() + timedelta(hours=1),
         )
 
-        total_price = Decimal(0)
         cart_items = request.session.get("cart", [])
-
         if not cart_items:
             return redirect("shop")
+        
+        total_price = Decimal(0)
 
         for item in cart_items:
-            cake = Cake.objects.get(id=item["cake_id"]) if item.get("cake_id") else None
-            box = SelectionBox.objects.get(id=item["box_id"]) if item.get("box_id") else None
+            cake = Cake.objects.filter(id=item.get("cake_id")).first()
+            box = SelectionBox.objects.filter(id=item.get("box_id")).first()
             quantity = item["quantity"]
 
-            OrderItem.objects.create(order=order, cake=cake, box=box, quantity=quantity)
-            total_price += (cake.price if cake else box.price) * quantity
+            if cake or box:
+                OrderItem.objects.create(
+                    order=order,
+                    item_type="cake" if cake else "box",
+                    item_id=cake.id if cake else box.id,
+                    name=cake.cake_type if cake else box.box_type,
+                    price=cake.price if cake else box.price,
+                    quantity=quantity
+                )
+
+                total_price += (cake.price if cake else box.price) * quantity
 
         order.total_price = total_price
         order.save()
@@ -120,8 +132,11 @@ def submit_order(request):
 # ORDER HISTORY – Displays user orders with modification and deletion options.
 @login_required
 def order_history(request):
-    orders = Order.objects.filter(user=request.user).select_related("user").order_by("-created_at")
+    orders = Order.objects.filter(user=request.user).annotate(item_count=Count("order_items")).filter(item_count__gt=0)
+    orders = orders.select_related("user").order_by("-created_at")
+    
     return render(request, "shop/order_history.html", {"orders": orders, "now": now()})
+
 
 
 # MODIFY ORDER – Allows users to update item quantities or remove items.
@@ -131,26 +146,40 @@ def modify_order(request, order_id):
 
     # Prevent modification after pickup time
     if now() >= order.pickup_time:
+        messages.warning(request, "You can no longer modify this order.")
         return redirect("order_history")
 
     if request.method == "POST":
-        for item in order.orderitem_set.all():
-            quantity = int(request.POST.get(f"quantity_{item.id}", item.quantity))
-            
-            if quantity == 0:
-                item.delete()
-            else:
-                item.quantity = quantity
-                item.save()
+        remove_item_id = request.POST.get("remove_item")
 
-        if order.orderitem_set.count() == 0:
-            order.delete()
+        if remove_item_id:
+            item_to_remove = order.order_items.filter(id=remove_item_id).first()
+            if item_to_remove:
+                item_to_remove.delete()
+                messages.success(request, "Item removed successfully!")
+            else:
+                messages.error(request, "Item not found or already removed.")
         else:
-            order.total_price = sum(
-                item.quantity * (item.cake.price if item.cake else item.box.price)
-                for item in order.orderitem_set.all()
-            )
-            order.save()
+            for item in order.order_items.all():
+                try:
+                    quantity = int(request.POST.get(f"quantity_{item.id}", item.quantity))
+                    if quantity <= 0:
+                        item.delete()  # ✅ Remove if quantity is 0
+                    else:
+                        item.quantity = quantity
+                        item.save()
+                except ValueError:
+                    messages.error(request, "Invalid quantity entered.")
+
+            messages.success(request, "Order updated successfully!")
+
+        if not order.order_items.exists():
+            order.delete()
+            messages.success(request, "Order deleted successfully!")
+            return redirect("order_history")
+
+        order.total_price = sum(item.quantity * item.price for item in order.order_items.all())
+        order.save()
 
         return redirect("order_history")
 
