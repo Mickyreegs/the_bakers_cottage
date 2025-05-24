@@ -142,7 +142,11 @@ def order_history(request):
 # MODIFY ORDER – Allows users to update item quantities or remove items.
 @login_required
 def modify_order(request, order_id):
-    order = get_object_or_404(Order, id=order_id, user=request.user)
+    order = Order.objects.filter(id=order_id, user=request.user).first()
+
+    if not order:
+        messages.warning(request, "This order no longer exists.")
+        return redirect("order_history")
 
     # Prevent modification after pickup time
     if now() >= order.pickup_time:
@@ -164,7 +168,7 @@ def modify_order(request, order_id):
                 try:
                     quantity = int(request.POST.get(f"quantity_{item.id}", item.quantity))
                     if quantity <= 0:
-                        item.delete()  # ✅ Remove if quantity is 0
+                        item.delete()
                     else:
                         item.quantity = quantity
                         item.save()
@@ -173,15 +177,11 @@ def modify_order(request, order_id):
 
             messages.success(request, "Order updated successfully!")
 
+        # ✅ If all items are removed, delete the order and redirect
         if not order.order_items.exists():
             order.delete()
             messages.success(request, "Order deleted successfully!")
             return redirect("order_history")
-
-        order.total_price = sum(item.quantity * item.price for item in order.order_items.all())
-        order.save()
-
-        return redirect("order_history")
 
     return render(request, "shop/modify_order.html", {"order": order})
 
