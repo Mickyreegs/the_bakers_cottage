@@ -1,10 +1,82 @@
-
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 
-<!-- index.html content starts here -->
+<main class="container my-4 shared">
 
+    <!-- Single Slideshow Section -->
+    <section class="mb-4">
+        <h2 class="text-center">Our Creations</h2>
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10 col-sm-12">
+                <div id="mainCarousel" class="carousel slide carousel-fade custom-carousel" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        {% for image in all_images %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="{% static 'images/home/' %}{{ image }}" class="d-block w-100" alt="Baked Goods">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <!-- Navigation Controls -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<!-- index.html content ends here -->
+    <!-- Description Cards -->
+    <section class="row mb-4">
+        <h2 class="text-center mb-4">Our Specialities</h2>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Beautifully Crafted Cakes</h5>
+                    <p class="card-text">A selection of cakes that will make your taste buds tingle.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Bespoke Cakes</h5>
+                    <p class="card-text">We can create a cake for any event or celebration. Drop us a message or give us a call.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Afternoon Tea</h5>
+                    <p class="card-text">Come join us and experience our award-winning afternoon tea!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews -->
+    <section class="reviews bg-light py-4">
+        <h2 class="text-center mb-4">Customer Reviews</h2>
+        <div class="row">
+            {% for review in customer_reviews %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ review.name }}</h5>
+                        <p class="card-text">"{{ review.text }}"</p>
+                        <p class="text-muted small">Rating: ★★★★★</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+</main>
+
 {% endblock %}
