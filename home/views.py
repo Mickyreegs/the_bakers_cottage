@@ -40,7 +40,6 @@ def home(request):
     })
 
 
-
 @login_required
 def submit_review(request):
     if request.method == "POST":
