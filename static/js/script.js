@@ -1,3 +1,4 @@
+//Removes item from cart
 function removeItem(itemId, orderId) {
     fetch(`/shop/modify_order/${orderId}/`, {
         method: "POST",
@@ -15,6 +16,33 @@ function removeItem(itemId, orderId) {
         }
     });
 }
+
+//Google maps
+let map;
+
+async function initMap() {
+  const position = { lat: 51.88226, lng: -8.43848 };
+
+  const { Map } = await google.maps.importLibrary("maps");
+  const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
+  map = new Map(document.getElementById("map"), {
+    zoom: 14,
+    center: position,
+    mapId: "{{ MAP_ID }}"
+  });
+
+  new AdvancedMarkerElement({
+    map: map,
+    position: position,
+    title: "Our Location",
+  });
+
+  console.log("Google Maps with AdvancedMarkerElement initialized successfully!");
+}
+
+window.initMap = initMap;
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const bookingForm = document.querySelector("#booking-form");
