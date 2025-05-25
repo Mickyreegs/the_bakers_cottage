@@ -14,7 +14,7 @@
                     <div class="carousel-inner">
                         {% for image in all_images %}
                         <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                            <img src="{% static 'images/home/' %}{{ image }}" class="d-block w-100" alt="Baked Goods">
+                            <img src="{% static 'images/home/' %}{{ image }}" class="d-block w-100" alt="Baked Delicacies">
                         </div>
                         {% endfor %}
                     </div>
@@ -60,23 +60,87 @@
     </section>
 
     <!-- Reviews -->
-    <section class="reviews bg-light py-4">
+    <section class="reviews py-4">
         <h2 class="text-center mb-4">Customer Reviews</h2>
-        <div class="row">
-            {% for review in customer_reviews %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 text-center">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ review.name }}</h5>
-                        <p class="card-text">"{{ review.text }}"</p>
-                        <p class="text-muted small">Rating: ★★★★★</p>
+
+        <!-- Success Message After Submission -->
+        {% if messages %}
+        <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+
+        <!-- Carousel for Reviews -->
+        <div id="reviewCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                {% for chunk in reviews %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <div class="container">
+                        <div class="row">
+                            {% for review in chunk %}
+                            <div class="col-md-4">
+                                <div class="card h-100 text-center">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ review.user.first_name }} {{ review.user.last_name }}</h5>
+                                        <p class="card-text">"{{ review.comment }}"</p>
+                                        <p class="text-muted small">
+                                            Rating:
+                                            {% for i in "12345"|make_list %}
+                                            {% if i|add:0 <= review.rating %}
+                                            <span class="text-warning">★</span>
+                                            {% else %}
+                                            <span class="text-secondary">★</span>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+        </div>
+
+        <!-- "Leave a Review" Button -->
+        <button type="button" class="btn btn-primary mt-4" data-bs-toggle="modal" data-bs-target="#reviewModal">
+            Leave a Review
+        </button>
+
+        <!-- Review Submission Modal -->
+        <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reviewModalLabel">Leave a Review</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="POST" action="{% url 'submit_review' %}">
+                        <div class="modal-body">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="id_comment" class="form-label">Your Review:</label>
+                                {{ form.comment.as_widget }}
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_rating" class="form-label">Rating:</label>
+                                {{ form.rating.as_widget }}
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Submit Review</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </section>
-
 </main>
 
 {% endblock %}
