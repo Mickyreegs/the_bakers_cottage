@@ -6,6 +6,24 @@
 <!-- index.html content starts here -->
 <main class="container my-4 shared">
     <section>
+        <form id="contact-form">
+            <div class="mb-3">
+                <label for="name" class="form-label">Name:</label>
+                <input type="text" id="name" name="name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="message" class="form-label">Message:</label>
+                <textarea id="message" name="message" class="form-control" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Send Message</button>
+        </form>
+    </section>
+
+    <section>
         <div id="map" style="height: 400px; width: 100%;"></div>
     </section>
 </main>
@@ -16,5 +34,16 @@
 {% block extra_js %}
     <script async defer loading="async" 
         src="https://maps.googleapis.com/maps/api/js?key={{ MAPS_KEY }}&callback=initMap">
+    </script>
+
+    <script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+    </script>
+    <script type="text/javascript">
+        (function(){
+            emailjs.init({
+                publicKey: "{{ EMAILJS_PUBLIC_KEY }}",
+            });
+        })();
     </script>
 {% endblock %}

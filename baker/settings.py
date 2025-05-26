@@ -28,6 +28,7 @@ TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 SECRET_KEY = os.environ.get("SECRET_KEY")
 MAPS_KEY = os.environ.get("MAPS_KEY")
 MAP_ID = os.environ.get("MAP_ID")
+EMAILJS_PUBLIC_KEY = os.environ.get("EMAILJS_PUBLIC_KEY")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!

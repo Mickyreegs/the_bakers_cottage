@@ -43,6 +43,28 @@ async function initMap() {
 
 window.initMap = initMap;
 
+//email.js
+document.getElementById("contact-form").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const serviceID = "service_8zte0gb";
+    const templateID = "contact";
+
+    const templateParams = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        message: document.getElementById("message").value
+    };
+
+    emailjs.send(serviceID, templateID, templateParams)
+        .then(() => {
+            alert("Message sent successfully!");
+        })
+        .catch((error) => {
+            console.error("EmailJS Error:", error);
+            alert("Failed to send message.");
+        });
+});
 
 document.addEventListener("DOMContentLoaded", function () {
     const bookingForm = document.querySelector("#booking-form");
