@@ -41,10 +41,10 @@ class Booking(models.Model):
     def clean(self):
         super().clean()
 
-        if self.date < now().date():
+        if self.date and self.date < now().date():
             raise ValidationError("Booking date cannot be in the past.")
 
-        if self.date == now().date() and self.time < now().time():
+        if self.date and self.time and self.date == now().date() and self.time < now().time():
             raise ValidationError("Booking time cannot be in the past.")
 
         if (self.guests_with_special_requests or 0) > self.number_of_guests:

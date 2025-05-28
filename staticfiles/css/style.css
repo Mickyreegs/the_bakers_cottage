@@ -36,6 +36,11 @@
     text-decoration: underline; 
 }
 
+.nav-link.active {
+    color: rgb(200, 100, 50) !important;
+    text-decoration: underline;
+}
+
 /* Footer Section Styling */
 .footer {
     background-color: rgb(245, 242, 229) !important; 
@@ -99,6 +104,7 @@
 .shared .card {
     background-color: rgb(245, 222, 179);
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    color: rgb(91, 51, 29);
     border: none;
     transition: transform 0.3s ease;
     text-align: center;
@@ -153,6 +159,8 @@
     max-width: 500px;
     margin: auto;
     text-align: center;
+    color: rgb(91, 51, 29);
+    font-family: "Lobster", sans-serif;
 }
 
 .auth-container h1, .auth-container h3 {
@@ -165,6 +173,14 @@
     font-family: "Oswald", sans-serif;
     font-size: 1rem;
     color: rgb(91, 51, 29);
+    margin-bottom: 20px;
+}
+
+.auth-container ul {
+    font-family: "Oswald", sans-serif;
+    font-size: 1rem;
+    color: rgb(91, 51, 29);
+    list-style: none;
     margin-bottom: 20px;
 }
 
@@ -205,6 +221,10 @@
 .auth-container button:hover {
     background-color: rgb(85, 45, 25);
     color: white;
+}
+
+.auth-container form {
+    width: 100%;
 }
 
 /* Media query for smaller screens */

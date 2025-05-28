@@ -10,7 +10,7 @@ class TeaPackageAdmin(admin.ModelAdmin):
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
-    list_display = ("customer", "guest_name", "guest_email", "package", "date", "time", "number_of_guests", "special_requests", "status")
+    list_display = ("customer", "guest_name", "guest_email", "package", "date", "time", "number_of_guests", "guests_with_special_requests", "special_requests", "status")
     search_fields = ("customer__username", "guest_name", "guest_email", "package__name")
     list_filter = ("date", "status", "package")
     ordering = ("date", "time")
