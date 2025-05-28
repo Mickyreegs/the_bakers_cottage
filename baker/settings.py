@@ -18,7 +18,7 @@ import dj_database_url
 from dotenv import load_dotenv
 # loading variables from .env file
 load_dotenv() 
-environment = os.getenv("ENVIRONMENT") or "prod"
+environment = os.getenv("ENVIRONMENT", "prod") 
 if environment == "prod":
     import env
 
