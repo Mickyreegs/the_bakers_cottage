@@ -13,7 +13,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
-if os.path.isfile('env.py'):
+
+# importing necessary functions from dotenv library
+from dotenv import load_dotenv
+# loading variables from .env file
+load_dotenv() 
+environment = os.getenv("ENVIRONMENT") or "prod"
+if environment == "prod":
     import env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -32,7 +38,7 @@ EMAILJS_PUBLIC_KEY = os.environ.get("EMAILJS_PUBLIC_KEY")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['.herokuapp.com', '127.0.0.1']
 
