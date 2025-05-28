@@ -190,5 +190,3 @@ cython_debug/
 
 # pyc items
 *.pyc
-
-env.py
