@@ -58,11 +58,12 @@ document.getElementById("contact-form").addEventListener("submit", function(even
 
     emailjs.send(serviceID, templateID, templateParams)
         .then(() => {
-            alert("Message sent successfully!");
+            document.getElementById("success-message").style.display = "block";
+            document.getElementById("contact-form").reset();
         })
         .catch((error) => {
             console.error("EmailJS Error:", error);
-            alert("Failed to send message.");
+            document.getElementById("fail-message").style.display = "block";
         });
 });
 

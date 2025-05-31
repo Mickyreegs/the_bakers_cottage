@@ -8,10 +8,20 @@
     <section class="mt-5">
         <h2 class="text-center mb-4">Get in touch!</h2>
         <p class="text-center">Do you need a bespoke cake for a special occasion? Let us know! We'll bring your idea to life!</p>
-        
+        <!-- Success message -->
+            <div id="success-message" class="alert alert-success text-center" style="display: none;">
+                Your message has been sent successfully!
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        <!-- Failed message -->
+            <div id="fail-message" class="alert alert-danger text-center" style="display: none;">
+                Your message was not sent! Please try again.
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-10 col-lg-8">
+
                     <form id="contact-form" class="w-100">
                         <div class="mb-3">
                             <label for="name" class="form-label">Name:</label>
