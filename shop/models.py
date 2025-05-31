@@ -28,16 +28,21 @@ STATUS_CHOICES = [
     ("Cancelled", "Cancelled"),
 ]
 
+#Setting time now+1
+def default_pickup_time():
+    return now() + timedelta(hours=1)
+
+
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     email = models.EmailField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal(0))
     created_at = models.DateTimeField(auto_now_add=True)
-    pickup_time = models.DateTimeField(default=now)
+    pickup_time = models.DateTimeField(default=default_pickup_time)
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default="Pending")
 
     def save(self, *args, **kwargs):
-        if not self.pickup_time or self.pickup_time.tzinfo is None:
+        if not self.pk and not self.pickup_time:
             self.pickup_time = now() + timedelta(hours=1)
         super().save(*args, **kwargs)
 

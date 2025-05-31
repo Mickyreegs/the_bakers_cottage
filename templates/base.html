@@ -74,6 +74,14 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
+                    <!-- Success Message for Order Submission -->
+                    <div id="orderSuccessMessage" class="alert alert-success text-center" style="display: none;">
+                        Order submitted successfully!
+                    </div>
+                    <!-- Error Message for Empty Order -->
+                    <div id="orderErrorMessage" class="alert alert-danger text-center" style="display: none;">
+                        Cannot submit an empty order!
+                    </div>
                     <!-- Success Message for Removal -->
                     <div id="removeMessage" class="alert alert-danger text-center" style="display: none;">
                         Item removed successfully!
@@ -109,9 +117,9 @@
     
     <main class="flex-shrink-0 main-bg">
         {% if user.is_authenticated %}
-            <p class="text-end m-3">You are logged in as {{ user }}</p>
+            <p class="alert text-end m-3">You are logged in as {{ user }}</p>
         {% else %}
-            <p class="text-end m-3">You are not logged in</p>
+            <p class="alert text-end m-3">You are not logged in</p>
         {% endif %}
         
         {% block content %}

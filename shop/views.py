@@ -6,6 +6,7 @@ from decimal import Decimal
 from django.utils.timezone import now
 from django.contrib import messages
 from django.db.models import Count
+from django.http import JsonResponse
 
 
 # SHOP VIEW – Displays available cakes and selection boxes.
@@ -86,18 +87,17 @@ def remove_from_cart(request, item_id):
 @login_required  
 def submit_order(request):
     if request.method == "POST":
-        user = request.user
-
-        order = Order.objects.create(
-            user=user,
-            email=user.email,
-            pickup_time=now() + timedelta(hours=1),
-        )
-
         cart_items = request.session.get("cart", [])
+
+        #Prevent empty order submission before creating the order
         if not cart_items:
+            messages.error(request, "Your cart is empty! Please add items before submitting.")
             return redirect("shop")
-        
+
+        user = request.user
+        order = Order(user=user, email=user.email)  
+        order.save()
+
         total_price = Decimal(0)
 
         for item in cart_items:
@@ -114,7 +114,6 @@ def submit_order(request):
                     price=cake.price if cake else box.price,
                     quantity=quantity
                 )
-
                 total_price += (cake.price if cake else box.price) * quantity
 
         order.total_price = total_price
@@ -124,7 +123,7 @@ def submit_order(request):
         request.session["cart_total"] = 0
         request.session.modified = True
 
-        return redirect("order_history")
+        messages.success(request, "Order submitted successfully!")
 
     return redirect("shop")
 

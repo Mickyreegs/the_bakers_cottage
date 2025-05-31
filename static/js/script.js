@@ -1,4 +1,4 @@
-//Removes item from cart
+//Removes item from modify order
 function removeItem(itemId, orderId) {
     fetch(`/shop/modify_order/${orderId}/`, {
         method: "POST",
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const specialGuestsInput = document.querySelector("#id_guests_with_special_requests");
     const totalGuestsInput = document.querySelector("#id_number_of_guests");
     const dateInput = document.querySelector("#id_date");
-    const timeInput = document.querySelector("#id_time");
+    const timeInput = document.querySelector("#id_time"); 
 
     // Ensure only future dates can be selected
     const today = new Date().toISOString().split("T")[0];
@@ -214,4 +214,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+
+    
 });
