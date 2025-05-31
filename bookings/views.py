@@ -16,21 +16,15 @@ def bookings(request):
         form = BookingForm(request.POST, user=request.user)
         if form.is_valid():
             booking = form.save(commit=False)
+            booking.customer = request.user if request.user.is_authenticated else None
 
-            if request.user.is_authenticated:
-                booking.customer = request.user
-            else:
-                if not booking.guest_name or not booking.guest_email:
-                    messages.error(request, "Guest bookings require both a name and an email.")
-                    return render(request, "bookings/bookings.html", {"packages": packages, "bookings": bookings, "form": form})    
             try:
-                booking.full_clean()
                 booking.save()
                 messages.success(request, "Your booking was successful! See you soon!")
                 return redirect(reverse("bookings"))
             except ValidationError as e:
-                messages.error(request, "; ".join(e.messages))
-        else:
-            form = BookingForm(user=request.user)
+                for field, error_list in e.error_dict.items():
+                    for error in error_list:
+                        form.add_error(field, error)
 
-    return render(request, "bookings/bookings.html", {"packages": packages, "bookings": bookings, "form": form})
+    return render(request, "bookings/bookings.html", {"packages": packages, "bookings": bookings, "form": form}) 

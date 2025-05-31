@@ -5,6 +5,13 @@ from .models import Booking
 class BookingForm(forms.ModelForm):
     guest_name = forms.CharField(required=False, label="Guest Name (if not logged in)")
     guest_email = forms.EmailField(required=False, label="Guest Email (if not logged in)")
+    time = forms.ChoiceField(
+        choices=[(f"{h:02d}:{m:02d}", f"{h:02d}:{m:02d}") for h in range(11, 17) for m in [0, 15, 30, 45]],  
+        required=True,
+        label="Booking Time",
+        widget=forms.Select(attrs={"class": "form-control"})
+    )
+
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
@@ -27,10 +34,15 @@ class BookingForm(forms.ModelForm):
             'guests_with_special_requests', 
             'special_requests'
             ]
+        labels = {
+            "number_of_guests": "Total Guests",
+            "guests_with_special_requests": "Number of guests with dietary needs",
+            "special_requests": "Special Dietary Requests / Event Requests e.g. Birthdays",
+        }
         widgets = {
             'package': forms.Select(attrs={"class": "form-control"}),
-            'date': forms.DateInput(attrs={"type": "date", "class": "form-control"}),
-            'time': forms.TimeInput(attrs={"type": "time", "class": "form-control"}),
+            'date': forms.DateInput(attrs={"type": "date", "class": "form-control", "min": now().date()}),
+            'time': forms.Select(attrs={"class": "form-control"}),
             'number_of_guests': forms.NumberInput(attrs={"class": "form-control"}),
             'guests_with_special_requests': forms.NumberInput(attrs={"class": "form-control"}),
             'special_requests': forms.Textarea(attrs={"class": "form-control", "rows": 4}),
@@ -51,16 +63,6 @@ class BookingForm(forms.ModelForm):
         if date == now().date() and time < now().time():
             raise forms.ValidationError("You cannot select a past time.")
         return time
-
-
-    def clean_guests_with_special_requests(self):
-        special_request_guests = self.cleaned_data.get("guests_with_special_requests", 0)
-        total_guests = self.cleaned_data.get("number_of_guests", 1)
-
-        if special_request_guests and special_request_guests > total_guests:
-            raise forms.ValidationError("Number of guests with special requests cannot exceed the total number of guests.")
-        
-        return special_request_guests
     
 
     def clean(self):
@@ -68,10 +70,24 @@ class BookingForm(forms.ModelForm):
         guest_name = cleaned_data.get("guest_name")
         guest_email = cleaned_data.get("guest_email")
         customer = self.instance.customer
+        special_request_guests = cleaned_data.get("guests_with_special_requests") or 0
+        total_guests = cleaned_data.get("number_of_guests") or 1
 
-        if not customer and (not guest_name or not guest_email):
-            raise forms.ValidationError("Guest bookings require both a name and an email.")
-        
+        if not customer:
+            if not guest_name:
+                self.add_error("guest_name", "Guest bookings require a name.")
+            if not guest_email:
+                self.add_error("guest_email", "Guest bookings require an email.")
+
+        if special_request_guests > total_guests:
+            self.add_error(
+                "guests_with_special_requests",
+                "The number of guests with special requests cannot exceed the total number of guests."
+            )
+
+
         return cleaned_data
+
+
 
 

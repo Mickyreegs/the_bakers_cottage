@@ -200,20 +200,5 @@ document.addEventListener("DOMContentLoaded", function () {
         logoutForm.addEventListener("submit", function (event) {
             console.log("Logout form submitted!");
         });
-    }
-
-    // Validate number of special request guests
-    if (specialGuestsInput && totalGuestsInput) {
-        specialGuestsInput.addEventListener("input", function () {
-            let totalGuests = parseInt(totalGuestsInput.value) || 1;
-            let specialGuests = parseInt(this.value) || 0;
-
-            if (specialGuests > totalGuests) {
-                showErrorMessage(["The number of guests with special requests cannot exceed the total number of guests."]);
-                this.value = totalGuests;
-            }
-        });
-    }
-
-    
+    }    
 });
