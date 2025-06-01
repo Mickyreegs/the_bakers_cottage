@@ -40,38 +40,38 @@
             <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                 <ul class="navbar-nav w-100 d-flex justify-content-center">
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">Home</a>
+                        <a class="nav-link {% if request.path == '/' %}active{% endif %}" aria-label="Home Page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/shop/' %}active{% endif %}" href="{% url 'shop' %}">Shop</a>
+                        <a class="nav-link {% if request.path == '/shop/' %}active{% endif %}" aria-label="Shop Page" href="{% url 'shop' %}">Shop</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/bookings/' %}active{% endif %}" href="{% url 'bookings' %}">Afternoon Tea</a>
+                        <a class="nav-link {% if request.path == '/bookings/' %}active{% endif %}" aria-label="Afternoon Tea Page" href="{% url 'bookings' %}">Afternoon Tea</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/contact/' %}active{% endif %}" href="{% url 'contact' %}">Contact</a>
+                        <a class="nav-link {% if request.path == '/contact/' %}active{% endif %}" aria-label="Contact Page" href="{% url 'contact' %}">Contact</a>
                     </li>
 
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link {% if request.path == logout_url %}active{% endif %}" href="{% url 'account_logout' %}">Logout</a>
+                            <a class="nav-link {% if request.path == logout_url %}active{% endif %}" aria-label="Logout Page" href="{% url 'account_logout' %}">Logout</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link {% if request.path == signup_url %}active{% endif %}" href="{% url 'account_signup' %}">Register</a>
+                            <a class="nav-link {% if request.path == signup_url %}active{% endif %}" aria-label="Signup Page" href="{% url 'account_signup' %}">Register</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link {% if request.path == login_url %}active{% endif %}" href="{% url 'account_login' %}">Login</a>
+                            <a class="nav-link {% if request.path == login_url %}active{% endif %}" aria-label="Sign In Page" href="{% url 'account_login' %}">Login</a>
                         </li>
                     {% endif %}
                     <li class="nav-item">
-                        <a class="nav-link cart-icon" href="#" data-bs-toggle="modal" data-bs-target="#cartModal">
+                        <a class="nav-link cart-icon" href="#" data-bs-toggle="modal" data-bs-target="#cartModal" aria-label="Shopping Cart">
                             <i class="fa-solid fa-cart-shopping"></i>
                         </a>
                     </li>
                     {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'order_history' %}">Order History</a>
+                        <a class="nav-link" aria-label="Order History Page" href="{% url 'order_history' %}">Order History</a>
                     </li>
                     {% endif %}
                 </ul>
@@ -106,10 +106,10 @@
                                 <input type="number" name="quantities" min="1" max="10" value="{{ item.quantity }}" data-id="{{ item.id }}">
                                 {% if item.box_id %}
                                     {{ item.box_type }} (€{{ item.box_price|floatformat:2 }})
-                                    <a href="{% url 'remove_from_cart' item.box_id %}" class="btn btn-danger btn-sm">Remove</a>
+                                    <a href="{% url 'remove_from_cart' item.box_id %}" class="btn btn-danger btn-sm" aria-label="Remove Button">Remove</a>
                                 {% elif item.cake_id %}
                                     {{ item.cake_type }} (€{{ item.cake_price|floatformat:2 }})
-                                    <a href="{% url 'remove_from_cart' item.cake_id %}" class="btn btn-danger btn-sm">Remove</a>
+                                    <a href="{% url 'remove_from_cart' item.cake_id %}" class="btn btn-danger btn-sm" aria-label="Remove Button">Remove</a>
                                 {% else %}
                                     <span class="text-danger">Error: Item ID Missing</span>
                                 {% endif %}
@@ -121,9 +121,9 @@
                 <div class="modal-footer">
                     <form method="post" action="{% url 'submit_order' %}">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-success">Confirm Order - Nom nom nom!</button>
+                        <button type="submit" class="btn btn-success" aria-label="Confirm Order Button">Confirm Order - Nom nom nom!</button>
                     </form>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close Button">Close</button>
                 </div>
             </div>
         </div>
@@ -153,10 +153,10 @@
                 <div class="col-lg-4 col-md-6 col-12 mb-3">
                     <h5>Follow us on Social Media</h5>
                     <div class="d-flex justify-content-center gap-3 mt-3">
-                        <a href="https://www.facebook.com/" target="_blank"><i class="fa-brands fa-square-facebook"></i></a>
-                        <a href="https://www.instagram.com/" target="_blank"><i class="fa-brands fa-square-instagram"></i></a>
-                        <a href="https://www.x.com/" target="_blank"><i class="fa-brands fa-square-x-twitter"></i></a>
-                        <a href="https://www.youtube.com/" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="https://www.facebook.com/" target="_blank" aria-label="Facebook Page"><i class="fa-brands fa-square-facebook"></i></a>
+                        <a href="https://www.instagram.com/" target="_blank" aria-label="Instagram Page"><i class="fa-brands fa-square-instagram"></i></a>
+                        <a href="https://www.x.com/" target="_blank" aria-label="X Page"><i class="fa-brands fa-square-x-twitter"></i></a>
+                        <a href="https://www.youtube.com/" target="_blank" aria-label="YouTube Page"><i class="fa-brands fa-youtube"></i></a>
                     </div>
                 </div>
                 <!-- Contact -->

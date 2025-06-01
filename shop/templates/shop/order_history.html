@@ -33,8 +33,8 @@
                     <td>{{ order.total_price }}</td>
                     <td>
                         {% if order.pickup_time > now %}
-                            <a href="{% url 'modify_order' order.id %}" class="btn btn-warning btn-sm">Modify</a>
-                            <a href="{% url 'delete_order' order.id %}" onclick="return confirm('Are you sure?');" class="btn btn-danger btn-sm">Delete</a>
+                            <a href="{% url 'modify_order' order.id %}" class="btn btn-warning btn-sm" aria-label="Modify Button">Modify</a>
+                            <a href="{% url 'delete_order' order.id %}" aria-label="Delete Button" onclick="return confirm('Are you sure?');" class="btn btn-danger btn-sm">Delete</a>
                         {% else %}
                             <span class="text-muted">Order locked for pickup.</span>
                         {% endif %}

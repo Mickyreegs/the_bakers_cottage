@@ -11,17 +11,16 @@
         <!-- Success message -->
             <div id="success-message" class="alert alert-success text-center" style="display: none;">
                 Your message has been sent successfully!
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close Button"></button>
             </div>
         <!-- Failed message -->
             <div id="fail-message" class="alert alert-danger text-center" style="display: none;">
                 Your message was not sent! Please try again.
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close Button"></button>
             </div>
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-10 col-lg-8">
-
                     <form id="contact-form" class="w-100">
                         <div class="mb-3">
                             <label for="name" class="form-label">Name:</label>
@@ -35,7 +34,7 @@
                             <label for="message" class="form-label">Message:</label>
                             <textarea id="message" name="message" class="form-control" rows="4" required></textarea>
                         </div>
-                        <button type="submit" class="btn w-100">Send Message</button>
+                        <button type="submit" class="btn w-100" aria-label="Submit Button">Send Message</button>
                     </form>
                 </div>
             </div>

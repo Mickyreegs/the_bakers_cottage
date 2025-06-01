@@ -3,6 +3,16 @@
 
 {% block content %}
 
+<!-- Success Message After Submission -->
+        {% if messages %}
+        <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+            {% for message in messages %}
+            {{ message }}
+            {% endfor %}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close Button"></button>
+        </div>
+        {% endif %}
+
 <main class="container my-4 shared">
 
     <!-- Single Slideshow Section -->
@@ -19,10 +29,10 @@
                         {% endfor %}
                     </div>
                     <!-- Navigation Controls -->
-                    <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+                    <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev" aria-label="Previous Button">
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                     </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+                    <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next" aria-label="Next Button">
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>
                     </button>
                 </div>
@@ -63,16 +73,6 @@
     <section class="reviews py-4">
         <h2 class="text-center mb-4">Customer Reviews</h2>
 
-        <!-- Success Message After Submission -->
-        {% if messages %}
-        <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
-            {% for message in messages %}
-            {{ message }}
-            {% endfor %}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endif %}
-
         <!-- Carousel for Reviews -->
         <div id="reviewCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
@@ -108,7 +108,7 @@
         </div>
 
         <!-- "Leave a Review" Button -->
-        <button type="button" class="btn btn-primary mt-4" data-bs-toggle="modal" data-bs-target="#reviewModal">
+        <button type="button" class="btn btn-primary mt-4" data-bs-toggle="modal" data-bs-target="#reviewModal" aria-label="Leave Review">
             Leave a Review
         </button>
 
@@ -133,8 +133,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-success">Submit Review</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-success" aria-label="Submit Button">Submit Review</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Cancel Button">Cancel</button>
                         </div>
                     </form>
                 </div>
