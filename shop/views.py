@@ -11,6 +11,10 @@ from django.http import JsonResponse
 
 # SHOP VIEW – Displays available cakes and selection boxes.
 def shop(request):
+    """
+    Display selection boxes and cakes on offer.
+    Fetches user's cart and calculates cart price.
+    """
     selection_boxes = SelectionBox.objects.all()
     cakes = Cake.objects.all()
 
@@ -44,6 +48,10 @@ def shop(request):
 
 # ADD TO CART – Stores selected items in session before checkout.
 def add_to_cart(request):
+    """
+    Adds user selected items to the cart.
+    Updates cart items and total price.
+    """
     if request.method == "POST":
         item_id = request.POST.get("item_id")
         item_type = request.POST.get("item_type")
@@ -94,6 +102,11 @@ def add_to_cart(request):
 
 # REMOVE FROM CART – Users can delete items from their cart before checkout.
 def remove_from_cart(request, item_id):
+    """
+    Remove an item from user's cart.
+    Finds the item through its ID.
+    Removes first matching instance to allow quantity adjustments.
+    """
     cart = request.session.get("cart", [])
 
     # Remove only first matching item to allow quantity adjustments
@@ -109,6 +122,12 @@ def remove_from_cart(request, item_id):
 # SUBMIT ORDER – Processes the cart and submits the order.
 @login_required
 def submit_order(request):
+    """
+    Submits the cart order.
+    Prevents empty cart submission.
+    Creates order associated with registeed user.
+    Saves to the database.
+    """
     if request.method == "POST":
         cart_items = request.session.get("cart", [])
 
@@ -157,6 +176,10 @@ def submit_order(request):
 # ORDER HISTORY – Displays user orders with modification and deletion options.
 @login_required
 def order_history(request):
+    """
+    Displays a user's order history.
+    Retrieves orders linked to registered users
+    """
     orders = (
         Order.objects.filter(user=request.user)
         .annotate(item_count=Count("order_items"))
@@ -177,6 +200,10 @@ def order_history(request):
 # MODIFY ORDER – Allows users to update item quantities or remove items.
 @login_required
 def modify_order(request, order_id):
+    """
+    Allows users to modify their order before the pickup time.
+    Allows for quanity adjustments and item removal
+    """
     order = Order.objects.filter(id=order_id, user=request.user).first()
 
     if not order:
@@ -235,6 +262,10 @@ def modify_order(request, order_id):
 # DELETE ORDER – Only before pickup time.
 @login_required
 def delete_order(request, order_id):
+    """
+    Allows users to delete their order before pickup time.
+    Redirects to order history upon deletion.
+    """
     order = get_object_or_404(Order, id=order_id, user=request.user)
 
     if now() < order.pickup_time:

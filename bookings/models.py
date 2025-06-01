@@ -7,6 +7,9 @@ from django.core.exceptions import ValidationError
 
 # Create your models here.
 class TeaPackage(models.Model):
+    """
+    Model for the afternoon tea package
+    """
     name = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=5, decimal_places=2)
     tiers = models.IntegerField()
@@ -15,10 +18,18 @@ class TeaPackage(models.Model):
     includes_prosecco = models.BooleanField(default=False)
 
     def __str__(self):
+        """
+        Returns string for the tea package
+        """
         return self.name
 
 
 class Booking(models.Model):
+    """
+    Model to handle bookings of afternoon tea.
+    Links to `User` as Customer
+    Links to `TeaPackage` for selection
+    """
     customer = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -78,6 +89,10 @@ class Booking(models.Model):
     )
 
     def clean(self):
+        """
+        Validates booking details before saving.
+        Raises error is conditions not met
+        """
         super().clean()
 
         if self.date and self.date < now().date():
@@ -106,6 +121,9 @@ class Booking(models.Model):
             )
 
     def __str__(self):
+        """
+        Returns string of the booking
+        """
         customer_name = (
             self.customer.username if self.customer else self.guest_name
         )

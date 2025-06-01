@@ -7,10 +7,18 @@ from django.contrib import messages
 
 # Create your views here.
 def grouped_reviews(reviews, size=3):
+    """
+    Groups the reviews into groups of 3
+    on the front end.
+    """
     return [reviews[i:i + size] for i in range(0, len(reviews), size)]
 
 
 def home(request):
+    """
+    Renders the home page.
+    Gets images to display, fetches reviews, groups reviews.
+    """
     all_images = [
         "birthday-1.jpg",
         "display-1.jpg",
@@ -42,6 +50,9 @@ def home(request):
 
 @login_required
 def submit_review(request):
+    """
+    Handles review submissions and validates
+    """
     if request.method == "POST":
         form = ReviewForm(request.POST)
         if form.is_valid():

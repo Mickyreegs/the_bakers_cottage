@@ -4,6 +4,10 @@ from .models import Booking
 
 
 class BookingForm(forms.ModelForm):
+    """
+    Form to handle Customer bookings
+    """
+
     guest_name = forms.CharField(
         required=False,
         label="Guest Name (if not logged in)"
@@ -24,6 +28,10 @@ class BookingForm(forms.ModelForm):
     )
 
     def __init__(self, *args, **kwargs):
+        """
+        Initialises the booking form and
+        auto-fills user details if authenticated
+        """
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
@@ -34,6 +42,10 @@ class BookingForm(forms.ModelForm):
             self.fields['guest_email'].initial = user.email
 
     class Meta:
+        """
+        Meta configuration for Booking form.
+        Defines model associations, fields, labels,widgets.
+        """
         model = Booking
         fields = [
             'guest_name',
@@ -75,12 +87,18 @@ class BookingForm(forms.ModelForm):
         }
 
     def clean_date(self):
+        """
+        Validates that bookings cannot be in the past.
+        """
         date = self.cleaned_data.get("date")
         if date < now().date():
             raise forms.ValidationError("You cannot select a past date.")
         return date
 
     def clean_time(self):
+        """
+        Validates that a booking cannot be for a time in the past
+        """
         date = self.cleaned_data.get("date")
         time = self.cleaned_data.get("time")
 
@@ -89,6 +107,10 @@ class BookingForm(forms.ModelForm):
         return time
 
     def clean(self):
+        """
+        Validates booking info for non-registered users
+        and confirms Total guests !< special requests
+        """
         cleaned_data = super().clean()
         guest_name = cleaned_data.get("guest_name")
         guest_email = cleaned_data.get("guest_email")

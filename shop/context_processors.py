@@ -1,4 +1,7 @@
 def cart_context(request):
+    """
+    Retrieves and calculates the total price of items in the user's cart.
+    """
     cart = request.session.get("cart", [])
     total_price = sum(
         item.get("box_price", 0) * item["quantity"]

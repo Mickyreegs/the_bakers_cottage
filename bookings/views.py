@@ -9,6 +9,9 @@ from .forms import BookingForm
 
 # Create your views here.
 def bookings(request):
+    """
+    Handles the afternoon tea bookings and validation errors
+    """
     packages = TeaPackage.objects.all()
     bookings = (
         Booking.objects.select_related("package")

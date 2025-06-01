@@ -243,39 +243,84 @@ The game performed well on the below browsers:
 
 ### Lighthouse Checks
 
-#### Lighthouse Desktop Check
-![Lighthouse Desktop Check](assets/README/Lighthouse%20Desktop.JPG)
+#### Home Page
+![Lighthouse Desktop Check](static/images/readme/Lighthouse%20Home.JPG)
 
-#### Lighthouse Mobile Check
-![Lighthouse Mobile Check](assets/README/Lighthouse%20Mobile.JPG)
+#### Shop Page
+![Lighthouse Mobile Check](static/images/readme/Lighthouse%20Shop.JPG)
+
+#### Tea Page
+![Lighthouse Mobile Check](static/images/readme/Lighthouse%20Tea.JPG)
+
+#### Contact Page
+![Lighthouse Mobile Check](static/images/readme/Lighthouse%20Contact.JPG)
+
+#### Register Page
+![Lighthouse Mobile Check](static/images/readme/Lighthouse%20Signup.JPG)
+
+#### Login Page
+![Lighthouse Mobile Check](static/images/readme/Lighthouse%20Sign%20in.JPG)
+
+#### Logout Page
+![Lighthouse Mobile Check](static/images/readme/Lighthouse%20Logout.JPG)
+
+#### Order History Page
+![Lighthouse Mobile Check](static/images/readme/Lighthouse%20Order%20History.JPG)
+
 
 ### Bug Fixes
 Bugs that were discovered and fixed are as follows:
 <ul>
-    <li>Missing semicolons (JS)</li>
-    This was fixed by including semicolons to the end of the JS code.
+    <li>TypeError at /shop/add_to_cart/</li>
+    Had to convert decimla to float before storing - |floatformat:2
+</ul>
+<ul>
+    <li>error: invalid object 100644 01d37f72a11981482ef9989f50c7b5394b48e2a4 for 'static/images/Shop/selection-box-6-piece.jpg'/</li>
+    This was an error: Error building trees on GitHub.  I fixed it using "git hash-object -w static/images/Shop/selection-box-6-piece.jpg".  I obtained this command from https://panjeh.medium.com/git-error-invalid-object-error-building-trees-44b582769457
+</ul>
+<ul>
+    <li>Google Maps - Map referenced in other code causing conflict</li>
+    As map was declared elsewhere in the code, I needed to specify that my google map should retrieve the element by ID.
+    if (document.getElementById("map")).  This then squashed the bug.
 </ul>
 
 
 ## Known Bugs
 Bugs that remain due to time contraints are as follows:
 <ul>
-    <li></li>
+    <li>There is 1 warning remaining: Google Maps JavaScript API has been loaded directly without loading=async.</li>
+    I've played around with this but it still remains.  I have async and loading=async.  I've tested by removing one and leaving the other but no luck.  As it is not an error I left it due to time constraints.
 </ul>
-
-![P&L Colour](assets/README/Known%20Bug%20Colour.jpg)
-
 <ul>
-    <li></li>
+    <li>Warning messages on Afternoon Tea page</li>
+    If the warning message is triggered for special guests being greater than total guests, the red warning is highlighted on the page as expected, but a duplicate bullet point warning is visible on the form also.  Due to time constraints I left this in as the page is still validating correctly.
 </ul>
+
+![Failure Message](static/images/readme/Failure%20Message.JPG)
+
+
+## Future Enhancements
+In the future, I would like to add toast notifications when adding items to the cart.  I believe this would be good for the user experience and enhance the page even more.
+<br>
+I would also like to amend the remove button functionality in the cart modal to allow the cart stay open after an item is deleted.  Due to time constraints I was unable to get to this.
+<br>
+Finally, per my Kanban board, I would like to add profile images to user accounts and also allow sign in functionality using social media.
 
 
 ## Deployment
-The site was deployed through GitHub.  The steps taken were:
+This project uses GitHub for storing the repository and is deployed via Heroku.
 <ul>
-    <li>Go to settings</li>
-    <li>Select pages and apply "Deploy from branch" on the Source dropdown</li>
-    <li>Our branch is set to "main" with "/root" as the folder</li>
+    <li>Create GitHub repository and link to Heroku on the Deploy tab</li>
+    <li>In Heroku Deploy tab, choose a branch to deploy - In this case, Main was used</li>
+    <li>In settings, the app was set to Europe as its region and buildpack set to heroku/python</li>
+    <li>In settings, the config vars were used to store sensitive information e.g. DATABASE_URL, MAPS_KEY etc.</li>
+    <li>In order to deploy the app to Heroku, I added a Procfile to the project.  I used "web: gunicorn baker.wsgi" in the file</li>
+    <li>The requirements file is also needed to tell Heroku what is needed to deploy and run the app.</li>
+    <li>To retrieve your requirements file, run the command pip3 freeze --local > requirements.txt in the VS Code terminal.</li>
+    <li>Also required are your static files.  You can collect these for Heroku using python manage.py collectstatic.</li>
+    <li>Make sure DEBUG is set to False in your settings.py file.</li>
+    <li>Also be sure to make '.herokuapp.com' one of the ALLOWED_HOSTS in your settings.py file.</li>
+    <li>Once you're happy with your code, commit it to GitHub.  Then go to the Deploy tab of Heroku and hit Deploy Branch</li>
 </ul>
 
 
@@ -288,7 +333,7 @@ The site was deployed through GitHub.  The steps taken were:
 
 [MDN Web Docs - General Queries](https://developer.mozilla.org/en-US/)
 
-Code Institute - JavaScript Essentials Module
+
 
 ### The following websites were used visual purposes:
 
@@ -296,10 +341,28 @@ Code Institute - JavaScript Essentials Module
 
 [Favicon](https://favicon.io/)
 
-### The following projects were referenced in relation to HTML, CSS & JavaScript:
+[Pexels](https://www.pexels.com/)
+
+[Logo.com](https://logo.com/)
+
+### The following projects were referenced in relation to HTML, CSS, JavaScript & Python:
 
 [Love Running Essentials Project](https://github.com/Code-Institute-Solutions/love-running-v3/tree/main/)
 
 [Love Maths Essentials Project](https://github.com/Code-Institute-Solutions/love-maths-2.0-sourcecode/tree/master/)
 
 [CPS - Project 1](https://github.com/Mickyreegs/CPS)
+
+[PortfoliOWN - Project 2](https://github.com/Mickyreegs/PortfoliOWN)
+
+[TERribly Financial - Project 3](https://github.com/Mickyreegs/Total-Expense-Ratio)
+
+[Whiskey Drop](https://github.com/Code-Institute-Solutions/BootstrappingYourNextBigIdea-BS4/tree/master)
+
+[Bootstrap Resume 1](https://github.com/Code-Institute-Solutions/resume-miniproject-bootstrap4/tree/master/)
+
+[Bootstrap Resume 2](https://github.com/Code-Institute-Solutions/InteractiveFrontendDevelopment-Resume/tree/master/)
+
+[Thorin Flask App](https://github.com/Code-Institute-Solutions/FlaskFramework/tree/master/)
+
+[Django Blog](https://github.com/Code-Institute-Solutions/django-blog-sourcecode/tree/main/)
