@@ -18,59 +18,65 @@ function removeItem(itemId, orderId) {
 }
 
 //Google maps
-let map;
+if (document.getElementById("map")) {
+    let googleMap;
 
-async function initMap() {
-	const position = { lat: 51.88226, lng: -8.43848 };
+    async function initMap() {
+        const position = { lat: 51.88226, lng: -8.43848 };
 
-	const { Map } = await google.maps.importLibrary("maps");
-	const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+        const { Map } = await google.maps.importLibrary("maps");
+        const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
-	map = new Map(document.getElementById("map"), {
-		zoom: 14,
-		center: position,
-		mapId: "{{ MAP_ID }}",
-	});
+        googleMap = new Map(document.getElementById("map"), {
+            zoom: 14,
+            center: position,
+            mapId: "{{ MAP_ID }}",
+        });
 
-	new AdvancedMarkerElement({
-		map: map,
-		position: position,
-		title: "Our Location",
-	});
+        new AdvancedMarkerElement({
+            map: googleMap,
+            position: position,
+            title: "Our Location",
+        });
 
-	console.log(
-		"Google Maps with AdvancedMarkerElement initialized successfully!"
-	);
+        console.log("Google Maps initialized successfully!");
+    }
+
+    window.initMap = initMap;
 }
 
-window.initMap = initMap;
 
 //email.js
-document
-	.getElementById("contact-form")
-	.addEventListener("submit", function (event) {
-		event.preventDefault();
+document.addEventListener("DOMContentLoaded", () => {
+    const contactForm = document.getElementById("contact-form");
 
-		const serviceID = "service_8zte0gb";
-		const templateID = "contact";
+    if (contactForm) {
+        contactForm.addEventListener("submit", function (event) {
+            event.preventDefault();
 
-		const templateParams = {
-			name: document.getElementById("name").value,
-			email: document.getElementById("email").value,
-			message: document.getElementById("message").value,
-		};
+            const serviceID = "service_8zte0gb";
+            const templateID = "contact";
 
-		emailjs
-			.send(serviceID, templateID, templateParams)
-			.then(() => {
-				document.getElementById("success-message").style.display = "block";
-				document.getElementById("contact-form").reset();
-			})
-			.catch((error) => {
-				console.error("EmailJS Error:", error);
-				document.getElementById("fail-message").style.display = "block";
-			});
-	});
+            const templateParams = {
+                name: document.getElementById("name").value,
+                email: document.getElementById("email").value,
+                message: document.getElementById("message").value,
+            };
+
+            emailjs
+                .send(serviceID, templateID, templateParams)
+                .then(() => {
+                    document.getElementById("success-message").style.display = "block";
+                    contactForm.reset();
+                })
+                .catch((error) => {
+                    console.error("EmailJS Error:", error);
+                    document.getElementById("fail-message").style.display = "block";
+                });
+        });
+    }
+});
+
 
 document.addEventListener("DOMContentLoaded", function () {
 	const bookingForm = document.querySelector("#booking-form");
