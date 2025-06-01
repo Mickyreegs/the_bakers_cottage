@@ -47,7 +47,7 @@ This is where the user can see where the bakery is based, with the use of google
 ## General Features
 
 ### Responsive Design
-The website was designed to ensure that the user can enjoy playing this game on all screen sizes.
+The website was designed to ensure that the user can enjoy all the features of this website on all devices - Mobile, Tablet, PC.
 
 ![AmIResponsive website image of PortfoliOWN responsiveness](assets/README/AmIResponsive.JPG)
 

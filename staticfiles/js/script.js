@@ -1,3 +1,5 @@
+/* jshint esversion: 8 */
+
 //Removes item from modify order
 function removeItem(itemId, orderId) {
 	fetch(`/shop/modify_order/${orderId}/`, {
@@ -19,64 +21,63 @@ function removeItem(itemId, orderId) {
 
 //Google maps
 if (document.getElementById("map")) {
-    let googleMap;
+	let googleMap;
 
-    async function initMap() {
-        const position = { lat: 51.88226, lng: -8.43848 };
+	const initMap = async () => {
+		const position = { lat: 51.88226, lng: -8.43848 };
 
-        const { Map } = await google.maps.importLibrary("maps");
-        const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+		const { Map } = await google.maps.importLibrary("maps");
+		const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
 
-        googleMap = new Map(document.getElementById("map"), {
-            zoom: 14,
-            center: position,
-            mapId: "{{ MAP_ID }}",
-        });
+		googleMap = new Map(document.getElementById("map"), {
+			zoom: 14,
+			center: position,
+			mapId: "{{ MAP_ID }}",
+		});
 
-        new AdvancedMarkerElement({
+		const marker = new AdvancedMarkerElement({
             map: googleMap,
             position: position,
             title: "Our Location",
         });
 
-        console.log("Google Maps initialized successfully!");
-    }
+		console.log("Google Maps initialized successfully!");
+	};
 
     window.initMap = initMap;
 }
-
+    
 
 //email.js
 document.addEventListener("DOMContentLoaded", () => {
-    const contactForm = document.getElementById("contact-form");
+	const contactForm = document.getElementById("contact-form");
 
-    if (contactForm) {
-        contactForm.addEventListener("submit", function (event) {
-            event.preventDefault();
+	if (contactForm) {
+		contactForm.addEventListener("submit", function (event) {
+			event.preventDefault();
 
-            const serviceID = "service_8zte0gb";
-            const templateID = "contact";
+			const serviceID = "service_8zte0gb";
+			const templateID = "contact";
 
-            const templateParams = {
-                name: document.getElementById("name").value,
-                email: document.getElementById("email").value,
-                message: document.getElementById("message").value,
-            };
+			const templateParams = {
+				name: document.getElementById("name").value,
+				email: document.getElementById("email").value,
+				message: document.getElementById("message").value,
+			};
 
-            emailjs
-                .send(serviceID, templateID, templateParams)
-                .then(() => {
-                    document.getElementById("success-message").style.display = "block";
-                    contactForm.reset();
-                })
-                .catch((error) => {
-                    console.error("EmailJS Error:", error);
-                    document.getElementById("fail-message").style.display = "block";
-                });
-        });
-    }
+			emailjs
+				.send(serviceID, templateID, templateParams)
+				.then(() => {
+					document.getElementById("success-message").style.display = "block";
+					contactForm.reset();
+				})
+				.catch((error) => {
+					console.error("EmailJS Error:", error);
+					document.getElementById("fail-message").style.display = "block";
+				});
+		});
+	}
 });
-
 
 document.addEventListener("DOMContentLoaded", function () {
 	const bookingForm = document.querySelector("#booking-form");
@@ -203,9 +204,9 @@ document.addEventListener("DOMContentLoaded", function () {
 			let errorMessages = [];
 			const guestName = guestNameInput ? guestNameInput.value.trim() : "";
 			const guestEmail = guestEmailInput ? guestEmailInput.value.trim() : "";
-			const userAuthenticated = userAuthStatus
-				? userAuthStatus.dataset.authenticated === "true"
-				: false;
+			const userAuthenticated = userAuthStatus ?
+				userAuthStatus.dataset.authenticated === "true" :
+				false;
 
 			if (!userAuthenticated && (!guestName || !guestEmail)) {
 				errorMessages.push("Guest bookings require both a name and an email.");

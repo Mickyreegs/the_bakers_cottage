@@ -13,7 +13,7 @@ from django.http import JsonResponse
 def shop(request):
     selection_boxes = SelectionBox.objects.all()
     cakes = Cake.objects.all()
-    
+
     cart = request.session.get("cart", [])
     print("Cart Session Data:", cart)
 
@@ -21,12 +21,25 @@ def shop(request):
     cart_total = Decimal(0)
     for item in cart:
         try:
-            price = Cake.objects.get(id=item["cake_id"]).price if item.get("cake_id") else SelectionBox.objects.get(id=item["box_id"]).price
+            price = (
+                Cake.objects.get(id=item["cake_id"]).price
+                if item.get("cake_id")
+                else SelectionBox.objects.get(id=item["box_id"]).price
+            )
             cart_total += price * item["quantity"]
         except (Cake.DoesNotExist, SelectionBox.DoesNotExist):
             continue
 
-    return render(request, "shop/shop.html", {"selection_boxes": selection_boxes, "cakes": cakes, "cart": cart, "cart_total": cart_total})
+    return render(
+        request,
+        "shop/shop.html",
+        {
+            "selection_boxes": selection_boxes,
+            "cakes": cakes,
+            "cart": cart,
+            "cart_total": cart_total,
+        },
+    )
 
 
 # ADD TO CART – Stores selected items in session before checkout.
@@ -38,14 +51,19 @@ def add_to_cart(request):
 
         cart = request.session.get("cart", [])
 
-        if item_type == "box" and SelectionBox.objects.filter(id=item_id).exists():
+        if (
+            item_type == "box"
+            and SelectionBox.objects.filter(id=item_id).exists()
+        ):
             item = SelectionBox.objects.get(id=item_id)
-            cart.append({
-                "box_id": item.id,
-                "box_type": item.box_type,
-                "box_price": float(item.price),
-                "quantity": quantity
-            })
+            cart.append(
+                {
+                    "box_id": item.id,
+                    "box_type": item.box_type,
+                    "box_price": float(item.price),
+                    "quantity": quantity,
+                }
+            )
         elif item_type == "cake" and Cake.objects.filter(id=item_id).exists():
             item = Cake.objects.get(id=item_id)
             cart.append({
@@ -57,11 +75,16 @@ def add_to_cart(request):
 
         request.session["cart"] = cart
 
-        request.session["cart_total"] = float(sum(
-            item.get("box_price", 0) * item["quantity"] if "box_price" in item else
-            item.get("cake_price", 0) * item["quantity"] if "cake_price" in item else 0
-            for item in cart
-        ))
+        request.session["cart_total"] = float(
+            sum(
+                item.get("box_price", 0) * item["quantity"]
+                if "box_price" in item
+                else item.get("cake_price", 0) * item["quantity"]
+                if "cake_price" in item
+                else 0
+                for item in cart
+            )
+        )
 
         request.session.modified = True
         request.session.save()
@@ -73,7 +96,7 @@ def add_to_cart(request):
 def remove_from_cart(request, item_id):
     cart = request.session.get("cart", [])
 
-    # Remove only first matching item to allow quantity adjustments instead of full deletion
+    # Remove only first matching item to allow quantity adjustments
     for item in cart:
         if str(item.get("cake_id") or item.get("box_id")) == str(item_id):
             cart.remove(item)
@@ -84,18 +107,21 @@ def remove_from_cart(request, item_id):
 
 
 # SUBMIT ORDER – Processes the cart and submits the order.
-@login_required  
+@login_required
 def submit_order(request):
     if request.method == "POST":
         cart_items = request.session.get("cart", [])
 
-        #Prevent empty order submission before creating the order
+        # Prevent empty order submission before creating the order
         if not cart_items:
-            messages.error(request, "Your cart is empty! Please add items before submitting.")
+            messages.error(
+                request,
+                "Your cart is empty! Please add items before submitting.",
+            )
             return redirect("shop")
 
         user = request.user
-        order = Order(user=user, email=user.email)  
+        order = Order(user=user, email=user.email)
         order.save()
 
         total_price = Decimal(0)
@@ -127,14 +153,25 @@ def submit_order(request):
 
     return redirect("shop")
 
-    
+
 # ORDER HISTORY – Displays user orders with modification and deletion options.
 @login_required
 def order_history(request):
-    orders = Order.objects.filter(user=request.user).annotate(item_count=Count("order_items")).filter(item_count__gt=0)
+    orders = (
+        Order.objects.filter(user=request.user)
+        .annotate(item_count=Count("order_items"))
+        .filter(item_count__gt=0)
+    )
     orders = orders.select_related("user").order_by("-created_at")
-    
-    return render(request, "shop/order_history.html", {"orders": orders, "now": now()})
+
+    return render(
+        request,
+        "shop/order_history.html",
+        {
+            "orders": orders,
+            "now": now(),
+        },
+    )
 
 
 # MODIFY ORDER – Allows users to update item quantities or remove items.
@@ -155,7 +192,9 @@ def modify_order(request, order_id):
         remove_item_id = request.POST.get("remove_item")
 
         if remove_item_id:
-            item_to_remove = order.order_items.filter(id=remove_item_id).first()
+            item_to_remove = order.order_items.filter(
+                id=remove_item_id
+            ).first()
             if item_to_remove:
                 item_to_remove.delete()
                 messages.success(request, "Item removed successfully!")
@@ -164,7 +203,9 @@ def modify_order(request, order_id):
         else:
             for item in order.order_items.all():
                 try:
-                    quantity = int(request.POST.get(f"quantity_{item.id}", item.quantity))
+                    quantity = int(
+                        request.POST.get(f"quantity_{item.id}", item.quantity)
+                    )
                     if quantity <= 0:
                         item.delete()
                     else:
@@ -179,8 +220,11 @@ def modify_order(request, order_id):
             order.delete()
             messages.success(request, "Order deleted successfully!")
             return redirect("order_history")
-        
-        order.total_price = sum(item.quantity * item.price for item in order.order_items.all())
+
+        order.total_price = sum(
+            item.quantity * item.price
+            for item in order.order_items.all()
+        )
         order.save()
 
         return redirect("order_history")
@@ -195,5 +239,5 @@ def delete_order(request, order_id):
 
     if now() < order.pickup_time:
         order.delete()
-    
+
     return redirect("order_history")

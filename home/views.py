@@ -52,4 +52,3 @@ def submit_review(request):
             return redirect("home")
 
     return redirect("home")
-
