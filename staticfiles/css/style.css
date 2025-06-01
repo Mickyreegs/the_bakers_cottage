@@ -21,7 +21,6 @@
     color: rgb(91, 51, 29) !important;
     font-family: "Lobster", sans-serif !important;
     font-size: 1.5rem !important;
-    font-weight: bold !important;
 }
 
 
@@ -93,6 +92,19 @@
     font-size: 0.85rem;
     margin-top: 10px;
 }
+
+/* Navbar toggler icon */
+.navbar-toggler {
+    background: #7C4E29 !important;
+    border: 2px solid rgb(245, 181, 113) !important;
+    padding: 8px; 
+    border-radius: 5px; 
+}
+
+.navbar-toggler-icon {
+    filter: invert(1) brightness(2);
+}
+
 
 
 /* Generally Shared Page Styling */

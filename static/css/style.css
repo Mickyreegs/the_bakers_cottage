@@ -93,6 +93,17 @@
     margin-top: 10px;
 }
 
+/* Navbar toggler icon */
+.navbar-toggler {
+    background: #7C4E29 !important;
+    border: 2px solid rgb(245, 181, 113) !important;
+    padding: 8px; 
+    border-radius: 5px; 
+}
+
+.navbar-toggler-icon {
+    filter: invert(1) brightness(2);
+}
 
 /* Generally Shared Page Styling */
 .shared {
