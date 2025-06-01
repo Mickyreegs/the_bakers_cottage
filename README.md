@@ -272,15 +272,15 @@ The game performed well on the below browsers:
 Bugs that were discovered and fixed are as follows:
 <ul>
     <li>TypeError at /shop/add_to_cart/</li>
-    Had to convert decimla to float before storing - |floatformat:2
+    Had to convert decimal to float before storing - |floatformat:2
 </ul>
 <ul>
     <li>error: invalid object 100644 01d37f72a11981482ef9989f50c7b5394b48e2a4 for 'static/images/Shop/selection-box-6-piece.jpg'/</li>
     This was an error: Error building trees on GitHub.  I fixed it using "git hash-object -w static/images/Shop/selection-box-6-piece.jpg".  I obtained this command from https://panjeh.medium.com/git-error-invalid-object-error-building-trees-44b582769457
 </ul>
 <ul>
-    <li>Google Maps - Map referenced in other code causing conflict</li>
-    As map was declared elsewhere in the code, I needed to specify that my google map should retrieve the element by ID.
+    <li>Google Maps - "map" referenced in other code causing conflict</li>
+    As "map" was declared elsewhere in the code, I needed to specify that my google map should retrieve the element by ID.
     if (document.getElementById("map")).  This then squashed the bug.
 </ul>
 
@@ -325,7 +325,7 @@ This project uses GitHub for storing the repository and is deployed via Heroku.
 
 
 ## Credits
-### The following websites were used for informational purposes:
+### The following websites were used for informational & research purposes:
 
 [Stack Overflow - General Queries](https://stackoverflow.com/)
 
@@ -333,6 +333,23 @@ This project uses GitHub for storing the repository and is deployed via Heroku.
 
 [MDN Web Docs - General Queries](https://developer.mozilla.org/en-US/)
 
+[Python.org - General Queries](https://docs.python.org/3/)
+
+[Google.com - Maps Guide](https://developers.google.com/maps/get-started#quickstart)
+
+[Django Project - General Queries](https://docs.djangoproject.com/en/5.2/)
+
+[dev.to - Context Processors](https://dev.to/sarahhudaib/context-processors-in-django-15h2)
+
+[GitHub - General Queries](https://github.com/)
+
+[Bootstrap - General Queries](https://getbootstrap.com/docs/5.3/getting-started/introduction/)
+
+[EmailJS](https://www.emailjs.com/)
+
+[Agile](https://agilealliance.org/agile-essentials/)
+
+[Code Institute - Various modules](https://learn.codeinstitute.net/dashboard)
 
 
 ### The following websites were used visual purposes:
