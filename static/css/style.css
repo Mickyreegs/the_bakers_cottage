@@ -4,16 +4,16 @@
 
 /* Header Styling */
 #logo {
-    background: #7C4E29; 
-    padding: 10px 20px; 
-    border-bottom: 2px solid rgb(245, 181, 113); 
-    text-align: center; 
+    background: #7C4E29;
+    padding: 10px 20px;
+    border-bottom: 2px solid rgb(245, 181, 113);
+    text-align: center;
 }
 
 #logo img {
-    max-width: 300px; 
-    height: auto; 
-    margin: 10px auto; 
+    max-width: 300px;
+    height: auto;
+    margin: 10px auto;
 }
 
 /* Alerts */
@@ -26,22 +26,22 @@
 
 /* Navbar Styling */
 .navbar {
-    background-color: rgb(245, 242, 229); 
+    background-color: rgb(245, 242, 229);
     font-family: "Lobster", sans-serif;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     padding: 10px 20px;
 }
 
 .nav-link {
-    color: rgb(91, 51, 29) !important; 
-    text-decoration: none; 
+    color: rgb(91, 51, 29) !important;
+    text-decoration: none;
     font-size: 1.2rem;
     transition: color 0.3s ease;
 }
 
 .nav-link:hover {
-    color: rgb(200, 100, 50) !important; 
-    text-decoration: underline; 
+    color: rgb(200, 100, 50) !important;
+    text-decoration: underline;
 }
 
 .nav-link.active {
@@ -51,13 +51,13 @@
 
 /* Footer Section Styling */
 .footer {
-    background-color: rgb(245, 242, 229) !important; 
-    color: rgb(91, 51, 29); 
-    font-family: "Oswald", sans-serif; 
+    background-color: rgb(245, 242, 229) !important;
+    color: rgb(91, 51, 29);
+    font-family: "Oswald", sans-serif;
 }
 
 .footer h5 {
-    font-family: "Lobster", sans-serif; 
+    font-family: "Lobster", sans-serif;
     font-size: 1.5rem;
     margin-bottom: 15px;
 }
@@ -69,10 +69,11 @@
 }
 
 .footer a:hover {
-    color: rgb(200, 100, 50); 
+    color: rgb(200, 100, 50);
 }
 
-.footer p, .footer ul {
+.footer p,
+.footer ul {
     margin: 0;
     font-size: 0.9rem;
     line-height: 1.5;
@@ -97,8 +98,8 @@
 .navbar-toggler {
     background: #7C4E29 !important;
     border: 2px solid rgb(245, 181, 113) !important;
-    padding: 8px; 
-    border-radius: 5px; 
+    padding: 8px;
+    border-radius: 5px;
 }
 
 .navbar-toggler-icon {
@@ -182,7 +183,8 @@
     font-family: "Lobster", sans-serif;
 }
 
-.auth-container h1, .auth-container h3 {
+.auth-container h1,
+.auth-container h3 {
     font-family: "Lobster", sans-serif;
     text-align: center;
     margin-bottom: 15px;
@@ -251,13 +253,13 @@
     .shared .card {
         margin-bottom: 20px;
     }
-    
+
     .shared .btn {
         font-size: 1rem;
         padding: 8px;
     }
 
-        .auth-container {
+    .auth-container {
         padding: 20px;
     }
 

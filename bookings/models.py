@@ -15,6 +15,7 @@ class TeaPackage(models.Model):
     savoury_options = models.IntegerField()
     includes_prosecco = models.BooleanField(default=False)
     
+    
     def __str__(self):
         return self.name
     
@@ -37,6 +38,7 @@ class Booking(models.Model):
         ('cancelled', 'Cancelled'),
     ]
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending', db_index=True)
+
 
     def clean(self):
         super().clean()

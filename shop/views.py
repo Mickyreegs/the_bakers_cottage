@@ -137,7 +137,6 @@ def order_history(request):
     return render(request, "shop/order_history.html", {"orders": orders, "now": now()})
 
 
-
 # MODIFY ORDER – Allows users to update item quantities or remove items.
 @login_required
 def modify_order(request, order_id):

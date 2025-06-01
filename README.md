@@ -46,8 +46,6 @@ This is where the user can see where the bakery is based, with the use of google
 
 ## General Features
 
-![Image of the finished PortfoliOWN webpage and layout](assets/README/Full%20Screen.JPG)
-
 ### Responsive Design
 The website was designed to ensure that the user can enjoy playing this game on all screen sizes.
 
