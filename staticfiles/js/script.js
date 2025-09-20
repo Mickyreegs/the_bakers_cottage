@@ -91,6 +91,26 @@ document.addEventListener("DOMContentLoaded", function () {
 	const totalGuestsInput = document.querySelector("#id_number_of_guests");
 	const dateInput = document.querySelector("#id_date");
 	const timeInput = document.querySelector("#id_time");
+	const guestLimitWarning = document.getElementById("guest-limit-warning");
+	const submitButton = document.querySelector("#booking-form button[type='submit']");
+
+	// Guest limit validation
+	function validateGuestLimit() {
+		const value = parseInt(totalGuestsInput.value, 10);
+		if (value > 12) {
+			guestLimitWarning.style.display = "block";
+			submitButton.disabled = true;
+		} else {
+			guestLimitWarning.style.display = "none";
+			submitButton.disabled = !bookingForm.checkValidity();
+		}
+	}
+
+	// Attach validation to input event
+	if (totalGuestsInput) {
+		totalGuestsInput.addEventListener("input", validateGuestLimit);
+		validateGuestLimit(); // Run on page load in case of pre-filled value
+	}
 
 	// Ensure only future dates can be selected
 	const today = new Date().toISOString().split("T")[0];
