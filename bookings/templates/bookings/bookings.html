@@ -62,9 +62,24 @@
                             </ul>
                         </div>
                     {% endif %}
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            <strong>Oops! Something went wrong:</strong>
+                            <ul>
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
                     <form method="POST" id="booking-form" class="w-100">
                         {% csrf_token %}
                         {{ form.as_p }}
+
+                        <div id="guest-limit-warning" class="alert alert-warning mt-2" style="display: none;">
+                            We can only accommodate up to 12 guests per booking.
+                        </div>
+
                         <button type="submit" class="btn" aria-label="Submit Button">Book Now</button>
                     </form>
                 </div>

@@ -30,16 +30,25 @@ def bookings(request):
             )
 
             try:
+                booking.full_clean(validate_unique=False)
+
                 booking.save()
                 messages.success(
                     request,
                     "Your booking was successful! See you soon!"
                 )
                 return redirect(reverse("bookings"))
+            
             except ValidationError as e:
-                for field, error_list in e.error_dict.items():
-                    for error in error_list:
-                        form.add_error(field, error)
+                if hasattr(e, 'error_dict'):
+                    for field, error_list in e.error_dict.items():
+                        for error in error_list:
+                            form.add_error(field, error)
+                elif hasattr(e, 'error_list'):
+                    for error in e.error_list:
+                        form.add_error(None, error.message)
+                else:
+                    form.add_error(None, str(e))
 
     return render(
         request,

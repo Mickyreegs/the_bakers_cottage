@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.timezone import now
 from .models import Booking
+from datetime import datetime
 
 
 class BookingForm(forms.ModelForm):
@@ -32,14 +33,17 @@ class BookingForm(forms.ModelForm):
         Initialises the booking form and
         auto-fills user details if authenticated
         """
-        user = kwargs.pop('user', None)
+        self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-        if user and user.is_authenticated:
+        if self.user and self.user.is_authenticated:
             self.fields['guest_name'].initial = (
-                user.get_full_name() or user.username
+                self.user.get_full_name() or self.user.username
             )
-            self.fields['guest_email'].initial = user.email
+            self.fields['guest_email'].initial = self.user.email
+    # End of __init__
+
+
 
     class Meta:
         """
@@ -58,7 +62,7 @@ class BookingForm(forms.ModelForm):
             'special_requests'
             ]
         labels = {
-            "number_of_guests": "Total Guests",
+            "number_of_guests": "Total Guests (Maximum 12)",
             "guests_with_special_requests": (
                 "Number of guests with dietary needs"
             ),
@@ -76,6 +80,8 @@ class BookingForm(forms.ModelForm):
             'time': forms.Select(attrs={"class": "form-control"}),
             'number_of_guests': forms.NumberInput(attrs={
                 "class": "form-control",
+                "min": 1,
+                "max": 12
             }),
             'guests_with_special_requests': forms.NumberInput(attrs={
                 "class": "form-control",
@@ -100,11 +106,17 @@ class BookingForm(forms.ModelForm):
         Validates that a booking cannot be for a time in the past
         """
         date = self.cleaned_data.get("date")
-        time = self.cleaned_data.get("time")
+        time_string = self.cleaned_data.get("time")
 
-        if date == now().date() and time < now().time():
-            raise forms.ValidationError("You cannot select a past time.")
-        return time
+        if date == now().date():
+            try:
+                time_obj = datetime.strptime(time_string, "%H:%M").time()
+                if time_obj < now().time():
+                    raise forms.ValidationError("You cannot select a time in the past.")
+            except ValueError:
+                raise forms.ValidationError("Invalid time format.")
+        return time_string
+
 
     def clean(self):
         """
@@ -114,12 +126,19 @@ class BookingForm(forms.ModelForm):
         cleaned_data = super().clean()
         guest_name = cleaned_data.get("guest_name")
         guest_email = cleaned_data.get("guest_email")
-        customer = self.instance.customer
         special_request_guests = (
             cleaned_data.get("guests_with_special_requests") or 0)
         total_guests = cleaned_data.get("number_of_guests") or 1
 
-        if not customer:
+        MAX_GUESTS = 12
+        if total_guests > MAX_GUESTS:
+            self.add_error(
+                "number_of_guests",
+                f"The number of guests that we can accommodate is {MAX_GUESTS} per booking."
+            )
+
+        user = getattr(self, 'user', None)
+        if not user or not user.is_authenticated:
             if not guest_name:
                 self.add_error("guest_name", "Guest bookings require a name.")
             if not guest_email:
