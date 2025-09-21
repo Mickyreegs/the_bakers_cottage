@@ -323,6 +323,10 @@ This project uses GitHub for storing the repository and is deployed via Heroku.
     <li>Once you're happy with your code, commit it to GitHub.  Then go to the Deploy tab of Heroku and hit Deploy Branch</li>
 </ul>
 
+## Project Resubmission
+The project needed to be resubmitted to remove some irritating bugs on the booking form and also to remove errors in the html code.
+
+The booking form has now been set to put a cap of 12 people per booking, and added warnings put in place when trying to select a time that has already passed today.  The form has been tested and the validations are working as expected.  Defensive code was added and the form is more robust.  No errors are present within the html.
 
 ## Credits
 ### The following websites were used for informational & research purposes:
