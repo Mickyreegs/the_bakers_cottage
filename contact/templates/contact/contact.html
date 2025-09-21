@@ -4,7 +4,7 @@
 {% block content %}
 
 <!-- index.html content starts here -->
-<main class="container my-4 shared">
+<div class="container my-4 shared">
     <section class="mt-5">
         <h2 class="text-center mb-4">Get in touch!</h2>
         <p class="text-center">Do you need a bespoke cake for a special occasion? Let us know! We'll bring your idea to life!</p>
@@ -52,20 +52,20 @@
         <h2>We're over here!</h2>
         <div class="my-4" id="map" style="height: 400px; width: 100%;"></div>
     </section>
-</main>
+</div>
 
 <!-- index.html content ends here -->
 {% endblock %}
 
 {% block extra_js %}
-    <script async defer loading="async" 
+    <script async defer
         src="https://maps.googleapis.com/maps/api/js?key={{ MAPS_KEY }}&callback=initMap">
     </script>
 
-    <script type="text/javascript"
+    <script
         src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
     </script>
-    <script type="text/javascript">
+    <script>
         (function(){
             emailjs.init({
                 publicKey: "{{ EMAILJS_PUBLIC_KEY }}",
