@@ -41,6 +41,9 @@ class BookingForm(forms.ModelForm):
                 self.user.get_full_name() or self.user.username
             )
             self.fields['guest_email'].initial = self.user.email
+            self.fields['guest_name'].required = False
+            self.fields['guest_email'].required = False
+
     # End of __init__
 
 

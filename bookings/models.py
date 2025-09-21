@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 
 
@@ -62,7 +62,7 @@ class Booking(models.Model):
     time = models.TimeField()
 
     number_of_guests = models.PositiveIntegerField(
-        validators=[MinValueValidator(1)]
+        validators=[MinValueValidator(1), MaxValueValidator(12)]
     )
 
     guests_with_special_requests = models.PositiveIntegerField(
@@ -124,10 +124,8 @@ class Booking(models.Model):
         """
         Returns string of the booking
         """
-        customer_name = (
-            self.customer.username if self.customer else self.guest_name
-        )
+        name = self.customer.username if self.customer else self.guest_name        
         return (
-            f"Booking for {customer_name} - {self.package.name} "
+            f"Booking #{self.id} for {name} "
             f"on {self.date} at {self.time}"
         )

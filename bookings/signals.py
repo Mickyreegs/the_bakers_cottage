@@ -4,6 +4,8 @@ from .models import Booking
 
 @receiver(post_save, sender=Booking)
 def update_booking_status(sender, instance, **kwargs):
-    if instance.number_of_guests >= 6:
-        instance.status = 'confirmed'
-        instance.save()
+    if instance.number_of_guests <= 6 and instance.status != 'confirmed':
+        Booking.objects.filter(pk=instance.pk).update(status='confirmed')
+    elif instance.number_of_guests > 6 and instance.status != 'pending':
+        Booking.objects.filter(pk=instance.pk).update(status='pending')
+

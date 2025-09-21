@@ -30,8 +30,6 @@ def bookings(request):
             )
 
             try:
-                booking.full_clean(validate_unique=False)
-
                 booking.save()
                 messages.success(
                     request,
